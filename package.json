@@ -1,0 +1,27 @@
+{
+  "name": "as-proto-workspace",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "./packages/*"
+  ],
+  "scripts": {
+    "test": "yarn workspaces run test",
+    "build": "yarn workspaces run build",
+    "bench:generate": "cd bench/data && protoc --plugin='protoc-gen-as=../../packages/as-proto-gen/bin/as-proto-gen' --as_out='../as-proto/assembly/generated' ./bench.proto && cd ../../",
+    "bench:build": "cd bench/as-proto && asc assembly/static_aspr.ts --target=release && tsc && cd ../../",
+    "bench:prepare": "yarn bench:generate && yarn bench:build",
+    "bench": "yarn bench:prepare && node bench"
+  },
+  "devDependencies": {
+    "@assemblyscript/loader": "^0.19.20",
+    "assemblyscript": "^0.19.20",
+    "benchmark": "^2.1.4",
+    "chalk": "^4.0.0",
+    "prettier": "^2.5.0",
+    "protobufjs": "^6.11.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.5.2"
+  }
+}

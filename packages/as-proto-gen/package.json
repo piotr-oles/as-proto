@@ -1,0 +1,27 @@
+{
+  "name": "as-proto-gen",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "author": "Piotr Oleś <piotrek.oles@gmail.com>",
+  "tags": ["assemblyscript", "protobuf", "proto", "binary", "webassembly", "fast", "generator"],
+  "files": [
+    "lib"
+  ],
+  "bin": {
+    "as-proto-gen": "bin/as-proto-gen"
+  },
+  "devDependencies": {
+    "@types/google-protobuf": "^3.15.5",
+    "@types/prettier": "^2.4.2"
+  },
+  "dependencies": {
+    "google-protobuf": "^3.19.1",
+    "prettier": "^2.5.0",
+    "ts-poet": "^4.6.1"
+  },
+  "scripts": {
+    "test": "echo 'no tests yet'",
+    "build": "rimraf build && tsc"
+  }
+}

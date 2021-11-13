@@ -1,0 +1,24 @@
+{
+  "targets": {
+    "debug": {
+      "sourceMap": true,
+      "debug": true,
+      "runtime": "incremental",
+      "exportRuntime": true,
+      "binaryFile": "../data/static_aspr.wasm",
+      "tsdFile": "../data/static_aspr.d.ts"
+    },
+    "release": {
+      "sourceMap": true,
+      "optimizeLevel": 3,
+      "shrinkLevel": 0,
+      "runtime": "incremental",
+      "converge": false,
+      "noAssert": true,
+      "binaryFile": "../data/static_aspr.wasm",
+      "textFile": "../data/static_aspr.wat",
+      "tsdFile": "../data/static_aspr.d.ts"
+    }
+  },
+  "options": {}
+}

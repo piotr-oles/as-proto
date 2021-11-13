@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "types": ["node"],
+    "outDir": "../data"
+  },
+  "files": [
+    "src/static_aspr.ts"
+  ]
+}
