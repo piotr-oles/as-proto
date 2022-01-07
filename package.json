@@ -7,8 +7,10 @@
     "./packages/*"
   ],
   "scripts": {
-    "test": "yarn workspaces run test",
-    "build": "yarn workspaces run build",
+    "postinstall": "lerna bootstrap",
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "release": "auto shipit",
     "bench:generate": "cd bench/data && protoc --plugin='protoc-gen-as=../../packages/as-proto-gen/bin/as-proto-gen' --as_out='../as-proto/assembly/generated' ./bench.proto && cd ../../",
     "bench:build": "cd bench/as-proto && asc assembly/static_aspr.ts --target=release && tsc && cd ../../",
     "bench:prepare": "yarn bench:generate && yarn bench:build",
@@ -16,12 +18,27 @@
   },
   "devDependencies": {
     "@assemblyscript/loader": "^0.19.20",
+    "@auto-it/conventional-commits": "^10.32.5",
+    "@auto-it/first-time-contributor": "^10.32.5",
     "assemblyscript": "^0.19.20",
+    "auto": "^10.32.5",
     "benchmark": "^2.1.4",
     "chalk": "^4.0.0",
     "prettier": "^2.5.0",
     "protobufjs": "^6.11.2",
     "rimraf": "^3.0.2",
     "typescript": "^4.5.2"
+  },
+  "auto": {
+    "plugins": [
+      "npm",
+      "conventional-commits",
+      "first-time-contributor",
+      "released"
+    ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   }
 }

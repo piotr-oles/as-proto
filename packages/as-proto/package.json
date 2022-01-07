@@ -1,9 +1,11 @@
 {
   "name": "as-proto",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "assembly/index.ts",
+  "types": "assembly/index.ts",
   "license": "MIT",
   "author": "Piotr Oleś <piotrek.oles@gmail.com>",
+  "repository": "https://github.com/piotr-oles/as-proto.git",
   "tags": ["assemblyscript", "protobuf", "proto", "binary", "webassembly", "fast"],
   "files": [
     "assembly"
