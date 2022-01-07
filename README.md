@@ -33,10 +33,7 @@ yarn add --dev as-proto-gen
 ## Code generation
 To generate AssemblyScript file from `.proto` file, use following command:
 ```sh
-protoc
-  --plugin=protoc-gen-as=/node_modules/.bin/as-proto-gen
-  --as_out=. 
-  ./file.proto
+protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./file.proto
 ```
 This command will create `./file.ts` file from `./file.proto` file.
 
