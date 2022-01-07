@@ -15,6 +15,7 @@
   },
   "scripts": {
     "test": "asp --verbose",
-    "build": "echo 'no build in as-proto package'"
+    "build": "echo 'no build in as-proto package'",
+    "prepublishOnly": "cp ../../README.md ./"
   }
 }
