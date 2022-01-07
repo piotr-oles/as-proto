@@ -6,6 +6,8 @@
 <h1>as-proto</h1>
 <p>Protobuf implementation in AssemblyScript</p>
 
+[![npm](https://img.shields.io/npm/v/as-proto)](https://www.npmjs.com/package/as-proto)
+
 <p>⚠️ This is not a production-ready package ⚠️</p>
 
 </div>
