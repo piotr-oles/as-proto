@@ -24,9 +24,10 @@ export class Protobuf {
 
   static decode<TMessage>(
     buffer: Uint8Array,
-    decoder: (reader: Reader, length: i32) => TMessage
+    decoder: (reader: Reader, length: i32) => TMessage,
+    length: i32 = -1
   ): TMessage {
     READER.reset(buffer);
-    return decoder(READER, -1);
+    return decoder(READER, length);
   }
 }
