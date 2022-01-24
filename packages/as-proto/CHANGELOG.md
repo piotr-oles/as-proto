@@ -1,3 +1,19 @@
+# v0.2.0 (Mon Jan 24 2022)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, null[@roaminroe](https://github.com/roaminroe), for all your work!
+
+#### 🚀 Enhancement
+
+- add length param to decode function [#3](https://github.com/piotr-oles/as-proto/pull/3) ([@roaminroe](https://github.com/roaminroe))
+
+#### Authors: 1
+
+- [@roaminroe](https://github.com/roaminroe)
+
+---
+
 # v0.1.0 (Fri Jan 07 2022)
 
 :tada: This release contains work from a new contributor! :tada:
