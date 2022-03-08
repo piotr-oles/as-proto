@@ -105,7 +105,7 @@ export function generateFieldDecodeInstruction(
     if (isRepeated) {
       return `
         case ${fieldNumber}:
-          if ((tag & 7) === 2) {
+          if ((tag & 7) === 2 && tag !== 26) {
             const repeatedEnd: usize = reader.ptr + reader.uint32();
             while (reader.ptr < repeatedEnd) {
               message.${fieldName}.push(reader.${fieldTypeInstruction}());
