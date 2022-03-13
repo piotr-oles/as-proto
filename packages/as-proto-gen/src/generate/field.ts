@@ -14,6 +14,7 @@ export function generateFieldEncodeInstruction(
 ): string {
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
   const isMessage = fieldDescriptor.getType() === Type.TYPE_MESSAGE;
+  const isPacked = fieldDescriptor.getOptions()?.hasPacked();
 
   const fieldTag = getFieldTag(fieldDescriptor);
   const fieldName = generateFieldName(fieldDescriptor);
@@ -22,14 +23,22 @@ export function generateFieldEncodeInstruction(
 
   if (isMessage) {
     const Message = generateRef(fieldDescriptor, scopeContext.getFileContext());
-    if (isRepeated) {
+    if (isRepeated && isPacked) {
+      return `
+        const ${fieldVariable} = message.${fieldName};
+        writer.uint32(${fieldTag});
+        writer.fork();
+        for (let i = 0; i < ${fieldVariable}.length; ++i) {
+          ${Message}.encode(${fieldVariable}[i], writer);
+        }
+        writer.ldelim();
+      `;
+    } else if (isRepeated) {
       return `
         const ${fieldVariable} = message.${fieldName};
         for (let i = 0; i < ${fieldVariable}.length; ++i) {
           writer.uint32(${fieldTag});
-          writer.fork();
           ${Message}.encode(${fieldVariable}[i], writer);
-          writer.ldelim();
         }
       `;
     } else {
@@ -44,7 +53,7 @@ export function generateFieldEncodeInstruction(
       `;
     }
   } else {
-    if (isRepeated) {
+    if (isRepeated && isPacked) {
       return `
         const ${fieldVariable} = message.${fieldName};
         if (${fieldVariable}.length !== 0) {
@@ -54,6 +63,16 @@ export function generateFieldEncodeInstruction(
             writer.${fieldTypeInstruction}(${fieldVariable}[i]);
           }
           writer.ldelim();
+        }
+      `;
+    } else if (isRepeated) {
+      return `
+        const ${fieldVariable} = message.${fieldName};
+        if (${fieldVariable}.length !== 0) {
+          for (let i = 0; i < ${fieldVariable}.length; ++i) {
+            writer.uint32(${fieldTag});
+            writer.${fieldTypeInstruction}(${fieldVariable}[i]);
+          }
         }
       `;
     } else if (isManagedFieldType(fieldDescriptor)) {
@@ -80,6 +99,7 @@ export function generateFieldDecodeInstruction(
   const fileContext = scopeContext.getFileContext();
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
   const isMessage = fieldDescriptor.getType() === Type.TYPE_MESSAGE;
+  const isPacked = fieldDescriptor.getOptions()?.hasPacked();
 
   const fieldNumber = fieldDescriptor.getNumber();
   assert.ok(fieldNumber !== undefined);
@@ -88,7 +108,16 @@ export function generateFieldDecodeInstruction(
 
   if (isMessage) {
     const Message = generateRef(fieldDescriptor, fileContext);
-    if (isRepeated) {
+    if (isRepeated && isPacked) {
+      return `
+        case ${fieldNumber}:
+          const repeatedEnd: usize = reader.ptr + reader.uint32();
+          while (reader.ptr < repeatedEnd) {
+            message.${fieldName}.push(${Message}.decode(reader, reader.uint32()));
+          }
+          break;
+      `;
+    } else if (isRepeated) {
       return `
         case ${fieldNumber}:
           message.${fieldName}.push(${Message}.decode(reader, reader.uint32()));
@@ -102,17 +131,19 @@ export function generateFieldDecodeInstruction(
       `;
     }
   } else {
-    if (isRepeated) {
+    if (isRepeated && isPacked) {
       return `
         case ${fieldNumber}:
-          if ((tag & 7) === 2) {
-            const repeatedEnd: usize = reader.ptr + reader.uint32();
-            while (reader.ptr < repeatedEnd) {
-              message.${fieldName}.push(reader.${fieldTypeInstruction}());
-            }
-          } else {
+          const repeatedEnd: usize = reader.ptr + reader.uint32();
+          while (reader.ptr < repeatedEnd) {
             message.${fieldName}.push(reader.${fieldTypeInstruction}());
           }
+          break;
+      `;
+    } else if (isRepeated) {
+      return `
+        case ${fieldNumber}:
+          message.${fieldName}.push(reader.${fieldTypeInstruction}());
           break;
       `;
     } else {
@@ -307,7 +338,8 @@ export function getFieldWireType(
   fieldDescriptor: FieldDescriptorProto
 ): number {
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
-  if (isRepeated) {
+  const isPacked = fieldDescriptor.getOptions()?.hasPacked();
+  if (isRepeated && isPacked) {
     return 2;
   }
 
