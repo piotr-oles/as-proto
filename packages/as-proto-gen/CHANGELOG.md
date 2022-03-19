@@ -1,3 +1,15 @@
+# v0.2.1 (Sat Mar 19 2022)
+
+#### 🐛 Bug Fix
+
+- fix packed vs non-packed repeated fields [#5](https://github.com/piotr-oles/as-proto/pull/5) ([@roaminroe](https://github.com/roaminroe))
+
+#### Authors: 1
+
+- [@roaminroe](https://github.com/roaminroe)
+
+---
+
 # v0.1.0 (Fri Jan 07 2022)
 
 :tada: This release contains work from a new contributor! :tada:
