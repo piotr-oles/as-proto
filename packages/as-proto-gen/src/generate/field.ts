@@ -38,7 +38,9 @@ export function generateFieldEncodeInstruction(
         const ${fieldVariable} = message.${fieldName};
         for (let i = 0; i < ${fieldVariable}.length; ++i) {
           writer.uint32(${fieldTag});
+          writer.fork();
           ${Message}.encode(${fieldVariable}[i], writer);
+          writer.ldelim();
         }
       `;
     } else {
