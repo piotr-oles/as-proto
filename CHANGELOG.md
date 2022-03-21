@@ -1,3 +1,16 @@
+# v0.2.2 (Mon Mar 21 2022)
+
+#### 🐛 Bug Fix
+
+- `as-proto-gen`
+  - fix repeated message - add missing fork and ldelim calls [#6](https://github.com/piotr-oles/as-proto/pull/6) ([@roaminroe](https://github.com/roaminroe))
+
+#### Authors: 1
+
+- [@roaminroe](https://github.com/roaminroe)
+
+---
+
 # v0.2.1 (Sat Mar 19 2022)
 
 #### 🐛 Bug Fix
