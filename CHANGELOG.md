@@ -1,3 +1,16 @@
+# v0.2.3 (Fri Apr 22 2022)
+
+#### 🐛 Bug Fix
+
+- `as-proto-gen`
+  - fix: follow proto3 specification for default values [#8](https://github.com/piotr-oles/as-proto/pull/8) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.2.2 (Mon Mar 21 2022)
 
 #### 🐛 Bug Fix
