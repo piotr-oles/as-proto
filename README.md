@@ -57,17 +57,11 @@ import { Writer, Reader } from "as-proto";
 
 export class StarRepoMessage {
   static encode(message: StarRepoMessage, writer: Writer): void {
-    const author = message.author;
-    if (author !== null) {
-      writer.uint32(10);
-      writer.string(author);
-    }
+    writer.uint32(10);
+    writer.string(message.author);
 
-    const repo = message.repo;
-    if (repo !== null) {
-      writer.uint32(18);
-      writer.string(repo);
-    }
+    writer.uint32(18);
+    writer.string(message.repo);
   }
 
   static decode(reader: Reader, length: i32): StarRepoMessage {
@@ -94,10 +88,10 @@ export class StarRepoMessage {
     return message;
   }
 
-  author: string | null;
-  repo: string | null;
+  author: string;
+  repo: string;
 
-  constructor(author: string | null = null, repo: string | null = null) {
+  constructor(author: string = "", repo: string = "") {
     this.author = author;
     this.repo = repo;
   }
