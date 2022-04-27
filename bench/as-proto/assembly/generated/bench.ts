@@ -2,11 +2,8 @@ import { Writer, Reader } from "as-proto";
 
 export class Test {
   static encode(message: Test, writer: Writer): void {
-    const string = message.string;
-    if (string !== null) {
-      writer.uint32(10);
-      writer.string(string);
-    }
+    writer.uint32(10);
+    writer.string(message.string);
 
     writer.uint32(16);
     writer.uint32(message.uint32);
@@ -55,13 +52,13 @@ export class Test {
     return message;
   }
 
-  string: string | null;
+  string: string;
   uint32: u32;
   inner: Test.Inner | null;
   float: f32;
 
   constructor(
-    string: string | null = "",
+    string: string = "",
     uint32: u32 = 0,
     inner: Test.Inner | null = null,
     float: f32 = 0.0
@@ -209,12 +206,10 @@ export class Outer {
   static encode(message: Outer, writer: Writer): void {
     const bool = message.bool;
     if (bool.length !== 0) {
-      writer.uint32(10);
-      writer.fork();
       for (let i = 0; i < bool.length; ++i) {
+        writer.uint32(8);
         writer.bool(bool[i]);
       }
-      writer.ldelim();
     }
 
     writer.uint32(17);
@@ -229,14 +224,7 @@ export class Outer {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if ((tag & 7) === 2) {
-            const repeatedEnd: usize = reader.ptr + reader.uint32();
-            while (reader.ptr < repeatedEnd) {
-              message.bool.push(reader.bool());
-            }
-          } else {
-            message.bool.push(reader.bool());
-          }
+          message.bool.push(reader.bool());
           break;
 
         case 2:

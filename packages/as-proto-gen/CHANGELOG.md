@@ -1,3 +1,39 @@
+# v0.2.3 (Fri Apr 22 2022)
+
+#### 🐛 Bug Fix
+
+- fix: follow proto3 specification for default values [#8](https://github.com/piotr-oles/as-proto/pull/8) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
+# v0.2.2 (Mon Mar 21 2022)
+
+#### 🐛 Bug Fix
+
+- fix repeated message - add missing fork and ldelim calls [#6](https://github.com/piotr-oles/as-proto/pull/6) ([@roaminroe](https://github.com/roaminroe))
+
+#### Authors: 1
+
+- [@roaminroe](https://github.com/roaminroe)
+
+---
+
+# v0.2.1 (Sat Mar 19 2022)
+
+#### 🐛 Bug Fix
+
+- fix packed vs non-packed repeated fields [#5](https://github.com/piotr-oles/as-proto/pull/5) ([@roaminroe](https://github.com/roaminroe))
+
+#### Authors: 1
+
+- [@roaminroe](https://github.com/roaminroe)
+
+---
+
 # v0.1.0 (Fri Jan 07 2022)
 
 :tada: This release contains work from a new contributor! :tada:
