@@ -7,7 +7,7 @@ import { processFile, addFile, generateExport } from "./generate/file";
 import { GeneratorContext } from "./generator-context";
 import { getPathWithoutProto } from "./names";
 
-fs.readFile(process.stdin.fd, (err, input) => {
+fs.readFile("./code_generator_request.pb.bin", (err, input) => {
   if (err !== null) {
     console.log("An error occurred in as-proto generator plugin.");
     console.error(err);

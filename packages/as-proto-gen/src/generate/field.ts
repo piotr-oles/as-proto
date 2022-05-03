@@ -8,10 +8,7 @@ import { ScopeContext } from "../scope-context";
 import Type = FieldDescriptorProto.Type;
 import Label = FieldDescriptorProto.Label;
 
-export function generateFieldEncodeInstruction(
-  fieldDescriptor: FieldDescriptorProto,
-  scopeContext: ScopeContext
-): string {
+export function generateFieldEncodeInstruction(fieldDescriptor: FieldDescriptorProto, scopeContext: ScopeContext): string {
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
   const isMessage = fieldDescriptor.getType() === Type.TYPE_MESSAGE;
   const isPacked = fieldDescriptor.getOptions()?.hasPacked();
@@ -94,10 +91,7 @@ export function generateFieldEncodeInstruction(
   }
 }
 
-export function generateFieldDecodeInstruction(
-  fieldDescriptor: FieldDescriptorProto,
-  scopeContext: ScopeContext
-): string {
+export function generateFieldDecodeInstruction(fieldDescriptor: FieldDescriptorProto, scopeContext: ScopeContext): string {
   const fileContext = scopeContext.getFileContext();
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
   const isMessage = fieldDescriptor.getType() === Type.TYPE_MESSAGE;
@@ -158,19 +152,14 @@ export function generateFieldDecodeInstruction(
   }
 }
 
-export function generateFieldName(
-  fieldDescriptor: FieldDescriptorProto
-): string {
+export function generateFieldName(fieldDescriptor: FieldDescriptorProto): string {
   const fieldName = fieldDescriptor.getName();
   assert.ok(fieldName);
 
   return fieldName;
 }
 
-export function generateFieldTypeBasic(
-  fieldDescriptor: FieldDescriptorProto,
-  fileContext: FileContext
-): string {
+export function generateFieldTypeBasic(fieldDescriptor: FieldDescriptorProto, fileContext: FileContext): string {
   switch (fieldDescriptor.getType()) {
     case Type.TYPE_INT32:
     case Type.TYPE_SINT32:
@@ -200,16 +189,11 @@ export function generateFieldTypeBasic(
     case Type.TYPE_ENUM:
       return generateRef(fieldDescriptor, fileContext);
     default:
-      throw new Error(
-        `Type "${fieldDescriptor.getTypeName()}" is not supported by as-proto-gen`
-      );
+      throw new Error(`Type "${fieldDescriptor.getTypeName()}" is not supported by as-proto-gen`);
   }
 }
 
-export function generateFieldType(
-  fieldDescriptor: FieldDescriptorProto,
-  fileContext: FileContext
-): string {
+export function generateFieldType(fieldDescriptor: FieldDescriptorProto, fileContext: FileContext): string {
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
 
   let typeCode = generateFieldTypeBasic(fieldDescriptor, fileContext);
@@ -223,9 +207,7 @@ export function generateFieldType(
   return typeCode;
 }
 
-export function generateFieldDefaultValue(
-  fieldDescriptor: FieldDescriptorProto
-): string {
+export function generateFieldDefaultValue(fieldDescriptor: FieldDescriptorProto): string {
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
   const defaultValue = fieldDescriptor.getDefaultValue();
 
@@ -259,16 +241,12 @@ export function generateFieldDefaultValue(
       case Type.TYPE_MESSAGE:
         return "null";
       default:
-        throw new Error(
-          `Type "${fieldDescriptor.getTypeName()}" is not supported by as-proto-gen`
-        );
+        throw new Error(`Type "${fieldDescriptor.getTypeName()}" is not supported by as-proto-gen`);
     }
   }
 }
 
-export function generateFieldTypeInstruction(
-  fieldDescriptor: FieldDescriptorProto
-): string | undefined {
+export function generateFieldTypeInstruction(fieldDescriptor: FieldDescriptorProto): string | undefined {
   switch (fieldDescriptor.getType()) {
     case Type.TYPE_INT32:
       return "int32";
@@ -305,37 +283,25 @@ export function generateFieldTypeInstruction(
     case Type.TYPE_MESSAGE:
       return undefined;
     default:
-      throw new Error(
-        `Type "${fieldDescriptor.getTypeName()}" is not supported by as-proto-gen`
-      );
+      throw new Error(`Type "${fieldDescriptor.getTypeName()}" is not supported by as-proto-gen`);
   }
 }
 
-export function isNullableFieldType(
-  fieldDescriptor: FieldDescriptorProto
-): boolean {
+export function isNullableFieldType(fieldDescriptor: FieldDescriptorProto): boolean {
   const fieldType = fieldDescriptor.getType();
   assert.ok(fieldType !== undefined);
 
   return fieldType === Type.TYPE_MESSAGE;
 }
 
-export function isManagedFieldType(
-  fieldDescriptor: FieldDescriptorProto
-): boolean {
+export function isManagedFieldType(fieldDescriptor: FieldDescriptorProto): boolean {
   const fieldType = fieldDescriptor.getType();
   assert.ok(fieldType !== undefined);
 
-  return (
-    fieldType === Type.TYPE_MESSAGE ||
-    fieldType === Type.TYPE_STRING ||
-    fieldType === Type.TYPE_BYTES
-  );
+  return fieldType === Type.TYPE_MESSAGE || fieldType === Type.TYPE_STRING || fieldType === Type.TYPE_BYTES;
 }
 
-export function getFieldWireType(
-  fieldDescriptor: FieldDescriptorProto
-): number {
+export function getFieldWireType(fieldDescriptor: FieldDescriptorProto): number {
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
   const isPacked = fieldDescriptor.getOptions()?.hasPacked();
   if (isRepeated && isPacked) {
