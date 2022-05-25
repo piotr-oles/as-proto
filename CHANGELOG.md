@@ -1,3 +1,19 @@
+# v0.2.4 (Mon May 23 2022)
+
+#### ⚠️ Pushed to `main`
+
+- Update README.md ([@piotr-oles](https://github.com/piotr-oles))
+
+#### 📝 Documentation
+
+- doc: update README.md generated code example [#9](https://github.com/piotr-oles/as-proto/pull/9) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.2.3 (Fri Apr 22 2022)
 
 #### 🐛 Bug Fix
