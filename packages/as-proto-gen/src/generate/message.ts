@@ -27,7 +27,23 @@ export function generateMessage(messageDescriptor: DescriptorProto, fileContext:
     return "";
   }
 
-  const Message = fileContext.registerDefinition(messageName);
+  const Message = fileContext.registerDefinition(messageNameWithNamespace);
+
+  const nested: string[] = [];
+  for (const nestedMessageDescriptor of messageDescriptor.getNestedTypeList()) {
+    nested.push(generateMessage(nestedMessageDescriptor, fileContext, messageNameWithNamespace));
+  }
+  for (const nestedEnumDescriptor of messageDescriptor.getEnumTypeList()) {
+    nested.push(generateEnum(nestedEnumDescriptor, fileContext, messageNameWithNamespace));
+  }
+
+  const MessageNamespace = nested.length
+    ? `
+      export namespace ${Message} {
+        ${nested.join("\n\n")}
+      }
+    `
+    : "";
 
   const MessageClass = `
     ${canMessageByUnmanaged(messageDescriptor, fileContext) ? "@unmanaged" : ""}
@@ -47,22 +63,6 @@ export function generateMessage(messageDescriptor: DescriptorProto, fileContext:
       return Protobuf.decode<${Message}>(a, ${Message}.decode)
     }
   `;
-
-  const nested: string[] = [];
-  for (const nestedMessageDescriptor of messageDescriptor.getNestedTypeList()) {
-    nested.push(generateMessage(nestedMessageDescriptor, fileContext, messageNameWithNamespace));
-  }
-  for (const nestedEnumDescriptor of messageDescriptor.getEnumTypeList()) {
-    nested.push(generateEnum(nestedEnumDescriptor, fileContext));
-  }
-
-  const MessageNamespace = nested.length
-    ? `
-      export namespace ${Message} {
-        ${nested.join("\n\n")}
-      }
-    `
-    : "";
 
   return `
     ${MessageClass}

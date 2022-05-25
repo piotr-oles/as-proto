@@ -15,7 +15,7 @@ export function generateFieldEncodeInstruction(fieldDescriptor: FieldDescriptorP
 
   const fieldTag = getFieldTag(fieldDescriptor);
   const fieldName = generateFieldName(fieldDescriptor);
-  const fieldVariable = scopeContext.getFreeName(fieldName);
+  const fieldVariable = scopeContext.getFreeName(fieldName) + '_';
   const fieldTypeInstruction = generateFieldTypeInstruction(fieldDescriptor);
 
   if (isMessage) {

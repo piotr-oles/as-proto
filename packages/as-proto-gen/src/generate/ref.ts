@@ -15,6 +15,12 @@ export function generateRef(fieldDescriptor: FieldDescriptorProto, fileContext: 
   const typeName = getTypeName(fieldTypeName);
 
   if (isSameFile) {
+    const types = typeName.split('.');
+    for (let i = 0; i < types.length -1; i++) {
+      if (fileContext.hasDefinition(types.slice(i).join('.'))) {
+        return types.slice(i).join('.')
+      }
+    }
     return fileContext.registerDefinition(typeName.split(".").at(-1) as string);
   } else {
     const fileName = fileDescriptor.getName();

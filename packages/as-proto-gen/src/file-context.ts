@@ -57,7 +57,9 @@ export class FileContext {
       for (let i = 0; i < fileDescriptorPaths.length - 1; i++) {
         if (fileDescriptorPaths[i] === importPaths[i] && !done) {
           returnPath.shift();
-          importName.shift();
+          if (importName.length > 1) {
+            importName.shift();
+          }
         } else {
           returnPath.unshift("..");
           sliceLen++;
@@ -71,8 +73,14 @@ export class FileContext {
     return [importNamePath, importPath];
   }
 
-  registerDefinition(definitionNamePath: string): string {
-    const [definitionName] = definitionNamePath.split(".");
+  hasDefinition(definitionName: string): boolean {
+    return this.registeredDefinitions.has(definitionName)
+  }
+
+  registerDefinition(definitionNamePath: string, namespace?: string): string {
+    let [definitionName] = definitionNamePath.split(".");
+
+    definitionName = namespace ? `${namespace}.${definitionName}` : definitionName;
 
     if (!this.registeredDefinitions.has(definitionName)) {
       if (this.importNames.has(definitionName)) {

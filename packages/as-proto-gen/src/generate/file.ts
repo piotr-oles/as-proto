@@ -13,8 +13,6 @@ export function processFile(fileDescriptor: FileDescriptorProto, fileContext: Fi
   const filename = fileDescriptor.getName();
   assert.ok(filename);
 
-  const filePackage = fileDescriptor.getPackage();
-
   const types: string[] = [];
   for (const messageDescriptor of fileDescriptor.getMessageTypeList()) {
     types.push(generateMessage(messageDescriptor, fileContext));
@@ -88,14 +86,20 @@ export function generateExport(
     }
   }
 
-  exports.forEach((exportPath: Set<string>, path: string) => {
+  for (const path of exports.keys()) {
     const filename = path + "/_export.ts";
     let code: string = "";
-    exportPath.forEach((target) => {
-      code += `export * from './${target}';\n`;
-    });
+    const exportPath = exports.get(path) as Set<string>;
+    for (const target of exportPath.values()) {
+      const exportName = indexes.get(path + '/' + target) as Set<string>;
+      if (exportName) {
+        code += `export { ${ [...exportName].join(', ')} } from './${target}';\n`;
+      } else {
+        code += `export * from './${target}';\n`;
+      }
+    };
     addFile(filename, code, codeGenResponse, protoc_version);
-  });
+  };
 
   let topIndex = "";
   indexes.forEach((pkgs: Set<String>, path: string) => {
@@ -108,7 +112,7 @@ export function generateExport(
     addFile(filename, code, codeGenResponse, protoc_version);
 
     if (path.split("/").length == 2) {
-      topIndex += `export * from '${path}';\n`;
+      topIndex += `export { ${[...pkgs].join(", ")} } from '${path}';\n`;
     }
   });
 
