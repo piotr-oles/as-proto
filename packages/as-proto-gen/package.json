@@ -32,7 +32,7 @@
   },
   "scripts": {
     "test": "echo 'no tests yet'",
-    "build": "rimraf build && tsc",
+    "build": "rimraf build && tsc --resolveJsonModule",
     "prepublishOnly": "cp ../../README.md ./"
   }
 }
