@@ -1,8 +1,15 @@
-import { EnumDescriptorProto, EnumValueDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
+import {
+  EnumDescriptorProto,
+  EnumValueDescriptorProto,
+} from "google-protobuf/google/protobuf/descriptor_pb";
 import { FileContext } from "../file-context";
 import * as assert from "assert";
 
-export function generateEnum(enumDescriptor: EnumDescriptorProto, fileContext: FileContext, enumNamespace?: string): string {
+export function generateEnum(
+  enumDescriptor: EnumDescriptorProto,
+  fileContext: FileContext,
+  enumNamespace?: string
+): string {
   const enumName = enumDescriptor.getName();
   assert.ok(enumName !== undefined);
 
@@ -11,7 +18,9 @@ export function generateEnum(enumDescriptor: EnumDescriptorProto, fileContext: F
 
   return `
     export enum ${enumName} {
-      ${enumValues.map((valueDescriptor) => generateEnumValue(valueDescriptor)).join(",\n")}
+      ${enumValues
+        .map((valueDescriptor) => generateEnumValue(valueDescriptor))
+        .join(",\n")}
     }
   `;
 }
