@@ -77,7 +77,7 @@ export function generateExport(
     const filePath = getPathWithoutProto(filename).split("/");
 
     for (let i = 1; i < filePath.length; i++) {
-      const path = "./" + filePath.slice(0, i).join("/");
+      const path = filePath.slice(0, i).join("/");
       const exportPath = filePath.at(i) as string;
       if (exports.has(path)) {
         exports.get(path)?.add(exportPath);
@@ -87,7 +87,7 @@ export function generateExport(
     }
 
     for (let i = 0; i < filePath.length - 1; i++) {
-      const path = "./" + filePath.slice(0, i + 1).join("/");
+      const path = filePath.slice(0, i + 1).join("/");
       let pkg = packages.at(i);
       if (pkg == undefined || pkg == "") {
         pkg = filePath.at(i) as string;
@@ -127,8 +127,8 @@ export function generateExport(
     code += `export { ${[...pkgs].join(", ")} };`;
     addFile(filename, code, codeGenResponse, protoc_version);
 
-    if (path.split("/").length == 2) {
-      topIndex += `export { ${[...pkgs].join(", ")} } from '${path}';\n`;
+    if (path.split("/").length == 1) {
+      topIndex += `export { ${[...pkgs].join(", ")} } from './${path}';\n`;
     }
   });
 

@@ -10,5 +10,6 @@
     "types": ["node"],
     "outDir": "lib",
     "sourceMap": true,
+    "resolveJsonModule": true,
   }
 }
