@@ -5,11 +5,15 @@ import { getRelativeImport, isRelativeImport } from "./names";
 export class FileContext {
   private readonly generatorContext: GeneratorContext;
   private readonly fileDescriptor: FileDescriptorProto;
-  private readonly registeredImports: Map<string, Map<string, string>> = new Map();
+  private readonly registeredImports: Map<string, Map<string, string>> =
+    new Map();
   private readonly registeredDefinitions: Set<string> = new Set();
   private readonly importNames: Set<string> = new Set();
 
-  constructor(generatorContext: GeneratorContext, fileDescriptor: FileDescriptorProto) {
+  constructor(
+    generatorContext: GeneratorContext,
+    fileDescriptor: FileDescriptorProto
+  ) {
     this.generatorContext = generatorContext;
     this.fileDescriptor = fileDescriptor;
   }
@@ -23,16 +27,23 @@ export class FileContext {
   }
 
   registerImport(importNamePath: string, importPath: string): string {
-    [importNamePath, importPath] = this.getRelativeImportPath(importNamePath, importPath);
+    [importNamePath, importPath] = this.getRelativeImportPath(
+      importNamePath,
+      importPath
+    );
 
     const [importName, ...importNamespace] = importNamePath.split(".");
 
     if (!importName) {
-      throw new Error(`Cannot register empty import of ${importNamePath} from ${importPath}.`);
+      throw new Error(
+        `Cannot register empty import of ${importNamePath} from ${importPath}.`
+      );
     }
 
-    const importNames = this.registeredImports.get(importPath) || new Map<string, string>();
-    const uniqueImportName = importNames.get(importName) || this.getUniqueName(importName);
+    const importNames =
+      this.registeredImports.get(importPath) || new Map<string, string>();
+    const uniqueImportName =
+      importNames.get(importName) || this.getUniqueName(importName);
 
     importNames.set(importName, uniqueImportName);
     this.registeredImports.set(importPath, importNames);
@@ -40,10 +51,15 @@ export class FileContext {
     return [uniqueImportName, ...importNamespace].join(".");
   }
 
-  getRelativeImportPath(importNamePath: string, importPath: string): [string, string] {
+  getRelativeImportPath(
+    importNamePath: string,
+    importPath: string
+  ): [string, string] {
     if (isRelativeImport(importPath)) {
       const importName = importNamePath.split(".");
-      const fileDescriptorPaths = (this.fileDescriptor.getName() || "").split("/");
+      const fileDescriptorPaths = (this.fileDescriptor.getName() || "").split(
+        "/"
+      );
       const importPaths = importPath.split("/");
       const returnPath = importPath.split("/");
       let done = false;
@@ -67,20 +83,25 @@ export class FileContext {
         }
       }
 
-      return [importName.join("."), getRelativeImport(returnPath.slice(0, sliceLen).join("/"))];
+      return [
+        importName.join("."),
+        getRelativeImport(returnPath.slice(0, sliceLen).join("/")),
+      ];
     }
 
     return [importNamePath, importPath];
   }
 
   hasDefinition(definitionName: string): boolean {
-    return this.registeredDefinitions.has(definitionName)
+    return this.registeredDefinitions.has(definitionName);
   }
 
   registerDefinition(definitionNamePath: string, namespace?: string): string {
     let [definitionName] = definitionNamePath.split(".");
 
-    definitionName = namespace ? `${namespace}.${definitionName}` : definitionName;
+    definitionName = namespace
+      ? `${namespace}.${definitionName}`
+      : definitionName;
 
     if (!this.registeredDefinitions.has(definitionName)) {
       if (this.importNames.has(definitionName)) {
@@ -109,9 +130,15 @@ export class FileContext {
       const importFields: string[] = [];
       for (const [importName, uniqueImportName] of importNames) {
         const isAliased = importName !== uniqueImportName;
-        importFields.push(isAliased ? `${importName} as ${uniqueImportName}` : `${importName}`);
+        importFields.push(
+          isAliased ? `${importName} as ${uniqueImportName}` : `${importName}`
+        );
       }
-      importLines.push(`import { ${importFields.join(", ")} } from ${JSON.stringify(importPath)};`);
+      importLines.push(
+        `import { ${importFields.join(", ")} } from ${JSON.stringify(
+          importPath
+        )};`
+      );
     }
 
     return importLines.join("\n");

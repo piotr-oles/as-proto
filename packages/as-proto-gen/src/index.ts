@@ -1,6 +1,9 @@
 import * as assert from "assert";
 import * as fs from "fs";
-import { CodeGeneratorRequest, CodeGeneratorResponse } from "google-protobuf/google/protobuf/compiler/plugin_pb";
+import {
+  CodeGeneratorRequest,
+  CodeGeneratorResponse,
+} from "google-protobuf/google/protobuf/compiler/plugin_pb";
 
 import { FileContext } from "./file-context";
 import { processFile, addFile, generateExport } from "./generate/file";
@@ -19,9 +22,15 @@ fs.readFile(process.stdin.fd, (err, input) => {
     const codeGenResponse = new CodeGeneratorResponse();
     const generatorContext = new GeneratorContext();
 
-    const PROTOC_VERSION = codeGenRequest.getCompilerVersion()?.toArray().slice(0, 3).join(".");
+    const PROTOC_VERSION = codeGenRequest
+      .getCompilerVersion()
+      ?.toArray()
+      .slice(0, 3)
+      .join(".");
 
-    codeGenResponse.setSupportedFeatures(CodeGeneratorResponse.Feature.FEATURE_PROTO3_OPTIONAL);
+    codeGenResponse.setSupportedFeatures(
+      CodeGeneratorResponse.Feature.FEATURE_PROTO3_OPTIONAL
+    );
 
     for (const fileDescriptor of codeGenRequest.getProtoFileList()) {
       const fileDescriptorName = fileDescriptor.getName();
@@ -31,14 +40,28 @@ fs.readFile(process.stdin.fd, (err, input) => {
 
     const codePart = new Map<string, string[]>();
     for (const fileName of codeGenRequest.getFileToGenerateList()) {
-      const fileDescriptor = generatorContext.getFileDescriptorByFileName(fileName);
+      const fileDescriptor =
+        generatorContext.getFileDescriptorByFileName(fileName);
       assert.ok(fileDescriptor);
 
-      const generatedCode = processFile(fileDescriptor, new FileContext(generatorContext, fileDescriptor));
-      addFile(getPathWithoutProto(fileName) + ".ts", generatedCode, codeGenResponse, PROTOC_VERSION as string);
+      const generatedCode = processFile(
+        fileDescriptor,
+        new FileContext(generatorContext, fileDescriptor)
+      );
+      addFile(
+        getPathWithoutProto(fileName) + ".ts",
+        generatedCode,
+        codeGenResponse,
+        PROTOC_VERSION as string
+      );
     }
 
-    generateExport(codeGenRequest, codeGenResponse, generatorContext, PROTOC_VERSION as string);
+    generateExport(
+      codeGenRequest,
+      codeGenResponse,
+      generatorContext,
+      PROTOC_VERSION as string
+    );
 
     process.stdout.write(Buffer.from(codeGenResponse.serializeBinary().buffer));
   } catch (error) {
