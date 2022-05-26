@@ -1,4 +1,4 @@
-import { Writer, Reader } from "as-proto";
+import { Writer, Reader, Protobuf } from "as-proto";
 
 export class Test {
   static encode(message: Test, writer: Writer): void {
@@ -8,11 +8,11 @@ export class Test {
     writer.uint32(16);
     writer.uint32(message.uint32);
 
-    const inner = message.inner;
-    if (inner !== null) {
+    const inner_ = message.inner;
+    if (inner_ !== null) {
       writer.uint32(26);
       writer.fork();
-      Test.Inner.encode(inner, writer);
+      Test.Inner.encode(inner_, writer);
       writer.ldelim();
     }
 
@@ -57,17 +57,16 @@ export class Test {
   inner: Test.Inner | null;
   float: f32;
 
-  constructor(
-    string: string = "",
-    uint32: u32 = 0,
-    inner: Test.Inner | null = null,
-    float: f32 = 0.0
-  ) {
+  constructor(string: string = "", uint32: u32 = 0, inner: Test.Inner | null = null, float: f32 = 0.0) {
     this.string = string;
     this.uint32 = uint32;
     this.inner = inner;
     this.float = float;
   }
+}
+
+export function decodeTest(a: Uint8Array): Test {
+  return Protobuf.decode<Test>(a, Test.decode);
 }
 
 export namespace Test {
@@ -76,19 +75,19 @@ export namespace Test {
       writer.uint32(8);
       writer.int32(message.int32);
 
-      const innerInner = message.innerInner;
-      if (innerInner !== null) {
+      const innerInner_ = message.innerInner;
+      if (innerInner_ !== null) {
         writer.uint32(18);
         writer.fork();
-        Test.Inner.InnerInner.encode(innerInner, writer);
+        Test.Inner.InnerInner.encode(innerInner_, writer);
         writer.ldelim();
       }
 
-      const outer = message.outer;
-      if (outer !== null) {
+      const outer_ = message.outer;
+      if (outer_ !== null) {
         writer.uint32(26);
         writer.fork();
-        Outer.encode(outer, writer);
+        Outer.encode(outer_, writer);
         writer.ldelim();
       }
     }
@@ -105,10 +104,7 @@ export namespace Test {
             break;
 
           case 2:
-            message.innerInner = Test.Inner.InnerInner.decode(
-              reader,
-              reader.uint32()
-            );
+            message.innerInner = Test.Inner.InnerInner.decode(reader, reader.uint32());
             break;
 
           case 3:
@@ -128,15 +124,15 @@ export namespace Test {
     innerInner: Test.Inner.InnerInner | null;
     outer: Outer | null;
 
-    constructor(
-      int32: i32 = 0,
-      innerInner: Test.Inner.InnerInner | null = null,
-      outer: Outer | null = null
-    ) {
+    constructor(int32: i32 = 0, innerInner: Test.Inner.InnerInner | null = null, outer: Outer | null = null) {
       this.int32 = int32;
       this.innerInner = innerInner;
       this.outer = outer;
     }
+  }
+
+  export function decodeInner(a: Uint8Array): Inner {
+    return Protobuf.decode<Inner>(a, Inner.decode);
   }
 
   export namespace Inner {
@@ -182,14 +178,18 @@ export namespace Test {
       }
 
       long: i64;
-      enum: Test.Enum;
+      enum: Enum;
       sint32: i32;
 
-      constructor(long: i64 = 0, enum_: Test.Enum = 0, sint32: i32 = 0) {
+      constructor(long: i64 = 0, enum_: Enum = 0, sint32: i32 = 0) {
         this.long = long;
         this.enum = enum_;
         this.sint32 = sint32;
       }
+    }
+
+    export function decodeInnerInner(a: Uint8Array): InnerInner {
+      return Protobuf.decode<InnerInner>(a, InnerInner.decode);
     }
   }
 
@@ -204,11 +204,11 @@ export namespace Test {
 
 export class Outer {
   static encode(message: Outer, writer: Writer): void {
-    const bool = message.bool;
-    if (bool.length !== 0) {
-      for (let i = 0; i < bool.length; ++i) {
+    const bool_ = message.bool;
+    if (bool_.length !== 0) {
+      for (let i = 0; i < bool_.length; ++i) {
         writer.uint32(8);
-        writer.bool(bool[i]);
+        writer.bool(bool_[i]);
       }
     }
 
@@ -247,4 +247,8 @@ export class Outer {
     this.bool = bool;
     this.double = double;
   }
+}
+
+export function decodeOuter(a: Uint8Array): Outer {
+  return Protobuf.decode<Outer>(a, Outer.decode);
 }

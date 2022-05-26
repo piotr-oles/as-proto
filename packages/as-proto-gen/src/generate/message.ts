@@ -27,7 +27,7 @@ export function generateMessage(messageDescriptor: DescriptorProto, fileContext:
     return "";
   }
 
-  const Message = fileContext.registerDefinition(messageNameWithNamespace);
+  const Message = fileContext.registerDefinition(messageName, messageNamespace);
 
   const nested: string[] = [];
   for (const nestedMessageDescriptor of messageDescriptor.getNestedTypeList()) {

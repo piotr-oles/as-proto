@@ -61,11 +61,7 @@ export function generateExport(
     const packages = generatorContext.getFileDescriptorByFileName(filename)?.getPackage()?.split(".") as string[];
     const filePath = getPathWithoutProto(filename).split("/");
 
-    if (packages.length !== filePath.length - 1) {
-      throw new Error(`Cannot generate export for ${filename}. Packages length not equals to path length -1.`);
-    }
-
-    for (let i = 1; i < filePath.length; i++) {
+     for (let i = 1; i < filePath.length; i++) {
       const path = "./" + filePath.slice(0, i).join("/");
       const exportPath = filePath.at(i) as string;
       if (exports.has(path)) {
@@ -77,7 +73,10 @@ export function generateExport(
 
     for (let i = 0; i < filePath.length - 1; i++) {
       const path = "./" + filePath.slice(0, i + 1).join("/");
-      const pkg = packages.at(i) as string;
+      let pkg = packages.at(i);
+      if (pkg == undefined || pkg == '') {
+        pkg = filePath.at(i) as string;
+      }
       if (indexes.has(path)) {
         indexes.get(path)?.add(pkg);
       } else {
@@ -116,5 +115,7 @@ export function generateExport(
     }
   });
 
-  addFile("./index.ts", topIndex, codeGenResponse, protoc_version);
+  if (topIndex != '') {
+    addFile("./index.ts", topIndex, codeGenResponse, protoc_version);
+  }
 }
