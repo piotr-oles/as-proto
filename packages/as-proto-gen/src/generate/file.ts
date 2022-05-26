@@ -41,11 +41,11 @@ export function addFile(
     `// versions:\n` +
     `// 	 protoc-gen-as v0.2.3\n` +
     `// 	 protoc        v${protoc_version}\n` +
-    `// source: ${filename}"\n\n"` +
+    `// source: ${filename}\n\n` +
     code;
 
   try {
-    formattedCode = prettier.format(code, {
+    formattedCode = prettier.format(formattedCode, {
       parser: "typescript",
       printWidth: 130,
     });
