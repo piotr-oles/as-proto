@@ -56,6 +56,27 @@ fs.readFile(process.stdin.fd, (err, input) => {
       );
     }
 
+    const parameters: Set<string> = new Set(codeGenRequest.getParameter()?.split(','));
+    if (parameters.has('gen-dependencies')) {
+      for (const fileName of generatorContext.getProtoDependencies()) {
+        const fileDescriptor =
+          generatorContext.getFileDescriptorByFileName(fileName);
+        assert.ok(fileDescriptor);
+
+        const generatedCode = processFile(
+          fileDescriptor,
+          new FileContext(generatorContext, fileDescriptor)
+        );
+        addFile(
+          getPathWithoutProto(fileName) + ".ts",
+          generatedCode,
+          codeGenResponse,
+          PROTOC_VERSION as string
+        );
+        codeGenRequest.addFileToGenerate(fileName);
+      }
+    }
+
     generateExport(
       codeGenRequest,
       codeGenResponse,
