@@ -38,7 +38,6 @@ fs.readFile(process.stdin.fd, (err, input) => {
       generatorContext.registerFile(fileDescriptor);
     }
 
-    const codePart = new Map<string, string[]>();
     for (const fileName of codeGenRequest.getFileToGenerateList()) {
       const fileDescriptor =
         generatorContext.getFileDescriptorByFileName(fileName);
