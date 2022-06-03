@@ -58,6 +58,9 @@ fs.readFile(process.stdin.fd, (err, input) => {
     const parameters: Set<string> = new Set(codeGenRequest.getParameter()?.split(','));
     if (parameters.has('gen-dependencies')) {
       for (const fileName of generatorContext.getProtoDependencies()) {
+        if (codeGenRequest.getFileToGenerateList().includes(fileName)) {
+          continue;
+        }
         const fileDescriptor =
           generatorContext.getFileDescriptorByFileName(fileName);
         assert.ok(fileDescriptor);
