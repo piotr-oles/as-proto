@@ -1,7 +1,12 @@
+import * as assert from "assert";
 import {
   DescriptorProto,
   FieldDescriptorProto,
 } from "google-protobuf/google/protobuf/descriptor_pb";
+
+import { FileContext } from "../file-context";
+import { ScopeContext } from "../scope-context";
+import { generateEnum } from "./enum";
 import {
   generateFieldDecodeInstruction,
   generateFieldDefaultValue,
@@ -10,10 +15,6 @@ import {
   generateFieldType,
   isManagedFieldType,
 } from "./field";
-import { FileContext } from "../file-context";
-import { generateEnum } from "./enum";
-import * as assert from "assert";
-import { ScopeContext } from "../scope-context";
 
 export function generateMessage(
   messageDescriptor: DescriptorProto,
@@ -35,19 +36,7 @@ export function generateMessage(
     return "";
   }
 
-  const Message = fileContext.registerDefinition(messageName);
-
-  const MessageClass = `
-    ${canMessageByUnmanaged(messageDescriptor, fileContext) ? "@unmanaged" : ""}
-    export class ${Message} {      
-      ${generateEncodeMethod(messageDescriptor, fileContext)}
-      ${generateDecodeMethod(messageDescriptor, fileContext)}
-      
-      ${generateMessageFieldsDeclarations(messageDescriptor, fileContext)}
-      
-      ${generateMessageConstructor(messageDescriptor, fileContext)}
-    }
-  `;
+  const Message = fileContext.registerDefinition(messageName, messageNamespace);
 
   const nested: string[] = [];
   for (const nestedMessageDescriptor of messageDescriptor.getNestedTypeList()) {
@@ -60,7 +49,9 @@ export function generateMessage(
     );
   }
   for (const nestedEnumDescriptor of messageDescriptor.getEnumTypeList()) {
-    nested.push(generateEnum(nestedEnumDescriptor, fileContext));
+    nested.push(
+      generateEnum(nestedEnumDescriptor, fileContext, messageNameWithNamespace)
+    );
   }
 
   const MessageNamespace = nested.length
@@ -71,8 +62,29 @@ export function generateMessage(
     `
     : "";
 
+  const MessageClass = `
+    ${canMessageByUnmanaged(messageDescriptor, fileContext) ? "@unmanaged" : ""}
+    export class ${Message} {
+      ${generateEncodeMethod(messageDescriptor, fileContext)}
+      ${generateDecodeMethod(messageDescriptor, fileContext)}
+
+      ${generateMessageFieldsDeclarations(messageDescriptor, fileContext)}
+
+      ${generateMessageConstructor(messageDescriptor, fileContext)}
+    }
+  `;
+
+  fileContext.registerImport("Protobuf", "as-proto");
+  fileContext.registerDefinition(`decode${Message}`);
+  const MessageFunction = `
+    export function decode${Message}(a: Uint8Array): ${Message} {
+      return Protobuf.decode<${Message}>(a, ${Message}.decode)
+    }
+  `;
+
   return `
     ${MessageClass}
+    ${MessageFunction}
     ${MessageNamespace}
   `;
 }
@@ -124,7 +136,7 @@ function generateDecodeMethod(
     static decode(reader: ${Reader}, length: i32): ${Message} {
       const end: usize = length < 0 ? reader.end : reader.ptr + length;
       const message = new ${Message}();
-      
+
       while (reader.ptr < end) {
         const tag = reader.uint32();
         switch (tag >>> 3) {
@@ -138,13 +150,13 @@ function generateDecodeMethod(
                 )}`
             )
             .join("\n")}
-          
+
           default:
             reader.skipType(tag & 7);
             break;
         }
       }
-              
+
       return message;
     }
   `;

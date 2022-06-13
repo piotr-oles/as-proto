@@ -24,3 +24,7 @@ export function getTypeName(fieldTypeName: string): string {
 export function getRelativeImport(importName: string): string {
   return importName.startsWith(".") ? importName : `./${importName}`;
 }
+
+export function isRelativeImport(importName: string): boolean {
+  return importName.startsWith(".") ? true : false;
+}

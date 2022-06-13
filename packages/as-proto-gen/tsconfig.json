@@ -8,6 +8,8 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "types": ["node"],
-    "outDir": "lib"
+    "outDir": "lib",
+    "sourceMap": true,
+    "resolveJsonModule": true
   }
 }

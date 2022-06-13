@@ -1,7 +1,7 @@
 import {
-  FileDescriptorProto,
   DescriptorProto,
   EnumDescriptorProto,
+  FileDescriptorProto,
 } from "google-protobuf/google/protobuf/descriptor_pb";
 
 import { getFieldTypeName } from "./names";
@@ -16,6 +16,7 @@ export class GeneratorContext {
     new Map();
   private typeNameToMessageDescriptor: Map<FieldTypeName, DescriptorProto> =
     new Map();
+  private protoDependencies: Set<string> = new Set();
 
   registerFile(fileDescriptor: FileDescriptorProto): void {
     const fileName = fileDescriptor.getName();
@@ -92,6 +93,14 @@ export class GeneratorContext {
     const fieldTypeName = getFieldTypeName(filePackage, enumNameWithNamespace);
 
     this.typeNameToFileDescriptor.set(fieldTypeName, fileDescriptor);
+  }
+
+  addProtoDependencies(fileName: string) {
+    this.protoDependencies.add(fileName);
+  }
+
+  getProtoDependencies(): IterableIterator<string> {
+    return this.protoDependencies.values();
   }
 
   getFileDescriptorByFileName(
