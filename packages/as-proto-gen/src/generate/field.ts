@@ -18,11 +18,11 @@ export function generateFieldEncodeInstruction(
 
   const fieldTag = getFieldTag(fieldDescriptor);
   const fieldName = generateFieldName(fieldDescriptor);
-  const fieldVariable = scopeContext.getFreeName(fieldName) + "_";
   const fieldTypeInstruction = generateFieldTypeInstruction(fieldDescriptor);
 
   if (isMessage) {
     const Message = generateRef(fieldDescriptor, scopeContext.getFileContext());
+    const fieldVariable = scopeContext.getFreeName(fieldName);
     if (isRepeated && isPacked) {
       return `
         const ${fieldVariable} = message.${fieldName};
@@ -55,6 +55,7 @@ export function generateFieldEncodeInstruction(
       `;
     }
   } else {
+    const fieldVariable = scopeContext.getFreeName(fieldName);
     if (isRepeated && isPacked) {
       return `
         const ${fieldVariable} = message.${fieldName};

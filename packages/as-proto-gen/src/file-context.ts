@@ -47,6 +47,7 @@ export class FileContext {
 
     importNames.set(importName, uniqueImportName);
     this.registeredImports.set(importPath, importNames);
+    this.importNames.add(uniqueImportName);
 
     return [uniqueImportName, ...importNamespace].join(".");
   }
@@ -94,6 +95,10 @@ export class FileContext {
 
   hasDefinition(definitionName: string): boolean {
     return this.registeredDefinitions.has(definitionName);
+  }
+
+  hasImportName(importName: string): boolean {
+    return this.importNames.has(importName);
   }
 
   registerDefinition(definitionNamePath: string, namespace?: string): string {

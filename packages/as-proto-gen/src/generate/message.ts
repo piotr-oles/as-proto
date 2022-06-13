@@ -75,6 +75,7 @@ export function generateMessage(
   `;
 
   fileContext.registerImport("Protobuf", "as-proto");
+  fileContext.registerDefinition(`decode${Message}`);
   const MessageFunction = `
     export function decode${Message}(a: Uint8Array): ${Message} {
       return Protobuf.decode<${Message}>(a, ${Message}.decode)

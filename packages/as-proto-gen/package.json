@@ -1,6 +1,6 @@
 {
   "name": "as-proto-gen",
-  "version": "0.3.0-alpha.3",
+  "version": "0.2.4",
   "license": "MIT",
   "main": "lib/index.js",
   "author": "Piotr Oleś <piotrek.oles@gmail.com>",
@@ -21,8 +21,10 @@
     "as-proto-gen": "bin/as-proto-gen"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
     "@types/google-protobuf": "^3.15.5",
     "@types/prettier": "^2.4.2",
+    "fs-extra": "^10.1.0",
     "rimraf": "^3.0.2"
   },
   "dependencies": {

@@ -100,7 +100,7 @@ export class GeneratorContext {
   }
 
   getProtoDependencies(): IterableIterator<string> {
-    return this.protoDependencies.values()
+    return this.protoDependencies.values();
   }
 
   getFileDescriptorByFileName(

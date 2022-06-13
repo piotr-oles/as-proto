@@ -17,7 +17,7 @@ export function generateEnum(
   const enumValues = enumDescriptor.getValueList();
 
   return `
-    export enum ${enumName} {
+    export enum ${Enum} {
       ${enumValues
         .map((valueDescriptor) => generateEnumValue(valueDescriptor))
         .join(",\n")}

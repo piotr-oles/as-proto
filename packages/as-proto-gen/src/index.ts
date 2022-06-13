@@ -1,12 +1,12 @@
 import * as assert from "assert";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import {
   CodeGeneratorRequest,
   CodeGeneratorResponse,
 } from "google-protobuf/google/protobuf/compiler/plugin_pb";
 
 import { FileContext } from "./file-context";
-import { processFile, addFile, generateExport } from "./generate/file";
+import { generateFile, addFile, generateExport } from "./generate/file";
 import { GeneratorContext } from "./generator-context";
 import { getPathWithoutProto } from "./names";
 
@@ -22,11 +22,14 @@ fs.readFile(process.stdin.fd, (err, input) => {
     const codeGenResponse = new CodeGeneratorResponse();
     const generatorContext = new GeneratorContext();
 
-    const PROTOC_VERSION = codeGenRequest
-      .getCompilerVersion()
-      ?.toArray()
-      .slice(0, 3)
-      .join(".");
+    const v = codeGenRequest.getCompilerVersion();
+    let PROTOC_VERSION = "";
+    if (v) {
+      PROTOC_VERSION = v.toArray().slice(0, 3).join(".");
+      PROTOC_VERSION += v.toArray()[3];
+    } else {
+      PROTOC_VERSION = "undefined";
+    }
 
     codeGenResponse.setSupportedFeatures(
       CodeGeneratorResponse.Feature.FEATURE_PROTO3_OPTIONAL
@@ -43,7 +46,7 @@ fs.readFile(process.stdin.fd, (err, input) => {
         generatorContext.getFileDescriptorByFileName(fileName);
       assert.ok(fileDescriptor);
 
-      const generatedCode = processFile(
+      const generatedCode = generateFile(
         fileDescriptor,
         new FileContext(generatorContext, fileDescriptor)
       );
@@ -55,8 +58,10 @@ fs.readFile(process.stdin.fd, (err, input) => {
       );
     }
 
-    const parameters: Set<string> = new Set(codeGenRequest.getParameter()?.split(','));
-    if (parameters.has('gen-dependencies')) {
+    const parameters: Set<string> = new Set(
+      codeGenRequest.getParameter()?.split(",")
+    );
+    if (parameters.has("gen-dependencies")) {
       for (const fileName of generatorContext.getProtoDependencies()) {
         if (codeGenRequest.getFileToGenerateList().includes(fileName)) {
           continue;
@@ -65,7 +70,7 @@ fs.readFile(process.stdin.fd, (err, input) => {
           generatorContext.getFileDescriptorByFileName(fileName);
         assert.ok(fileDescriptor);
 
-        const generatedCode = processFile(
+        const generatedCode = generateFile(
           fileDescriptor,
           new FileContext(generatorContext, fileDescriptor)
         );

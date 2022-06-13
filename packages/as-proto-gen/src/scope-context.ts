@@ -17,13 +17,19 @@ export class ScopeContext {
   getFreeName(preferredName: string): string {
     let freeName = this.getSafeName(preferredName);
     let freeSuffix = 2;
-    while (this.reservedNames.has(freeName)) {
+    while (
+      this.reservedNames.has(freeName) ||
+      this.fileContext.hasImportName(freeName)
+    ) {
       freeName = `${preferredName}_${freeSuffix++}`;
     }
+
     return freeName;
   }
 
   getSafeName(name: string): string {
-    return isReservedKeyword(name) ? `${name}_` : name;
+    return isReservedKeyword(name) || this.fileContext.hasImportName(name)
+      ? `${name}_`
+      : name;
   }
 }

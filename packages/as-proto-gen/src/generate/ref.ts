@@ -30,7 +30,7 @@ export function generateRef(
   } else {
     const fileName = fileDescriptor.getName();
     assert.ok(fileName);
-    fileContext.getGeneratorContext().addProtoDependencies(fileName)
+    fileContext.getGeneratorContext().addProtoDependencies(fileName);
     return fileContext.registerImport(
       typeName,
       getRelativeImport(getPathWithoutProto(fileName))
