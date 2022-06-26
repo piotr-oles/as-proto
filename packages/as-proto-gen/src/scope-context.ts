@@ -14,6 +14,9 @@ export class ScopeContext {
     return this.fileContext;
   }
 
+  /**
+   * Returns a name that is not already reserved.
+   */
   getFreeName(preferredName: string): string {
     let freeName = this.getSafeName(preferredName);
     let freeSuffix = 2;
@@ -23,6 +26,9 @@ export class ScopeContext {
     return freeName;
   }
 
+  /**
+   * Suffixes name if it's a reserved keyword
+   */
   getSafeName(name: string): string {
     return isReservedKeyword(name) ? `${name}_` : name;
   }
