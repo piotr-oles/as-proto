@@ -1,3 +1,21 @@
+# v0.2.5 (Sun Jun 26 2022)
+
+#### 🐛 Bug Fix
+
+- `as-proto-gen`
+  - fix: improve reliability for big .proto files [#13](https://github.com/piotr-oles/as-proto/pull/13) ([@piotr-oles](https://github.com/piotr-oles))
+  - chore: fix build script in as-proto-gen [#12](https://github.com/piotr-oles/as-proto/pull/12) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### 🔩 Dependency Updates
+
+- chore: add missing lerna dependency [#11](https://github.com/piotr-oles/as-proto/pull/11) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.2.4 (Mon May 23 2022)
 
 #### ⚠️ Pushed to `main`

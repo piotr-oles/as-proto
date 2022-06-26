@@ -1,3 +1,16 @@
+# v0.2.5 (Sun Jun 26 2022)
+
+#### 🐛 Bug Fix
+
+- fix: improve reliability for big .proto files [#13](https://github.com/piotr-oles/as-proto/pull/13) ([@piotr-oles](https://github.com/piotr-oles))
+- chore: fix build script in as-proto-gen [#12](https://github.com/piotr-oles/as-proto/pull/12) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.2.3 (Fri Apr 22 2022)
 
 #### 🐛 Bug Fix
