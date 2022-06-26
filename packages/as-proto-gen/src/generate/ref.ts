@@ -1,4 +1,4 @@
-import { getPathWithoutProto, getRelativeImport, getTypeName } from "../names";
+import { getPathWithoutProto, ensureRelativeImportDot, getTypeName } from "../names";
 import { FileContext } from "../file-context";
 import * as assert from "assert";
 import { FieldDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
@@ -26,7 +26,7 @@ export function generateRef(
 
     return fileContext.registerImport(
       typeName,
-      getRelativeImport(getPathWithoutProto(fileName))
+      ensureRelativeImportDot(getPathWithoutProto(fileName))
     );
   }
 }
