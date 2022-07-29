@@ -1,4 +1,4 @@
-import { Writer, Reader } from "as-proto";
+import { Writer, Reader } from "as-proto/assembly";
 
 export class Test {
   static encode(message: Test, writer: Writer): void {
