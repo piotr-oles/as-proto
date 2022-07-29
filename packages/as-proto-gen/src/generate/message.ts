@@ -84,7 +84,7 @@ function generateEncodeMethod(
   const messageName = messageDescriptor.getName();
   assert.ok(messageName);
 
-  const Writer = fileContext.registerImport("Writer", "as-proto");
+  const Writer = fileContext.registerImport("Writer", "as-proto/assembly");
   const Message = fileContext.registerDefinition(messageName);
 
   const scopeContext = new ScopeContext(fileContext, ["message", "writer"]);
@@ -109,7 +109,7 @@ function generateDecodeMethod(
   const messageName = messageDescriptor.getName();
   assert.ok(messageName);
 
-  const Reader = fileContext.registerImport("Reader", "as-proto");
+  const Reader = fileContext.registerImport("Reader", "as-proto/assembly");
   const Message = fileContext.registerDefinition(messageName);
 
   const scopeContext = new ScopeContext(fileContext, [
