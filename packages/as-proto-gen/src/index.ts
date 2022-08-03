@@ -1,5 +1,5 @@
 import * as assert from "assert";
-import * as fs from "fs-extra";
+import * as fs from "fs";
 import {
   CodeGeneratorRequest,
   CodeGeneratorResponse,
@@ -26,7 +26,9 @@ fs.readFile(process.stdin.fd, (err, input) => {
     let PROTOC_VERSION = "";
     if (v) {
       PROTOC_VERSION = v.toArray().slice(0, 3).join(".");
-      PROTOC_VERSION += v.toArray()[3];
+      if (v.toArray()[3] != "") {
+        PROTOC_VERSION += "-" + v.toArray()[3];
+      }
     } else {
       PROTOC_VERSION = "undefined";
     }
@@ -54,7 +56,7 @@ fs.readFile(process.stdin.fd, (err, input) => {
         getPathWithoutProto(fileName) + ".ts",
         generatedCode,
         codeGenResponse,
-        PROTOC_VERSION as string
+        PROTOC_VERSION
       );
     }
 
@@ -78,7 +80,7 @@ fs.readFile(process.stdin.fd, (err, input) => {
           getPathWithoutProto(fileName) + ".ts",
           generatedCode,
           codeGenResponse,
-          PROTOC_VERSION as string
+          PROTOC_VERSION
         );
         codeGenRequest.addFileToGenerate(fileName);
       }
@@ -88,7 +90,7 @@ fs.readFile(process.stdin.fd, (err, input) => {
       codeGenRequest,
       codeGenResponse,
       generatorContext,
-      PROTOC_VERSION as string
+      PROTOC_VERSION
     );
 
     process.stdout.write(Buffer.from(codeGenResponse.serializeBinary().buffer));
