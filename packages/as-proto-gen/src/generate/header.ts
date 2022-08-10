@@ -15,16 +15,16 @@ export function generateHeaderComment(compilerVersion: Version | undefined) {
   return comment;
 }
 
-function versionString(version: Version | undefined): string {
-  let result = "";
+/**
+ * @Returns a human-readable version string based on the `Version` type
+ * provided by the Protobuf compiler.
+ */
+function versionString(version: Version): string {
+  const [ major, minor, patch, suffix ] = version.toArray();
 
-  if (version) {
-    result = version.toArray().slice(0, 3).join(".");
-
-    if (version.toArray()[3] != "") {
-      result += "-" + version.toArray()[3];
-    }
+  if (suffix) {
+    return `${major}.${minor}.${patch}-${suffix}`;
+  } else {
+    return `${major}.${minor}.${patch}`;
   }
-
-  return result;
 }
