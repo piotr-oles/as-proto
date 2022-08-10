@@ -10,5 +10,6 @@
     "types": ["node"],
     "outDir": "lib",
     "resolveJsonModule": true
-  }
+  },
+  "include": ["src"]
 }
