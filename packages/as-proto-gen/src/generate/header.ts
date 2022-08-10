@@ -20,7 +20,7 @@ export function generateHeaderComment(compilerVersion: Version | undefined) {
  * provided by the Protobuf compiler.
  */
 function versionString(version: Version): string {
-  const [ major, minor, patch, suffix ] = version.toArray();
+  const [major, minor, patch, suffix] = version.toArray();
 
   if (suffix) {
     return `${major}.${minor}.${patch}-${suffix}`;
