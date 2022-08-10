@@ -9,8 +9,7 @@ import * as assert from "assert";
 export function generateFile(
   fileDescriptor: FileDescriptorProto,
   fileContext: FileContext,
-  compilerVersion: Version | undefined,
-  compilerOptions: Set<string>
+  compilerVersion: Version | undefined
 ): string {
   const fileName = fileDescriptor.getName();
   assert.ok(fileName);
@@ -40,14 +39,9 @@ export function generateFile(
     }
   }
 
-  let fileParts = [
+  return [
+    generateHeaderComment(compilerVersion),
     fileContext.getImportsCode(),
     NamespacedTypes
-  ];
-
-  if (compilerOptions.has("gen-header-comment")) {
-    fileParts.unshift(generateHeaderComment(compilerVersion));
-  }
-
-  return fileParts.join("\n");
+  ].join("\n");
 }
