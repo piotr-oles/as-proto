@@ -1,3 +1,15 @@
+# v0.2.7 (Wed Aug 10 2022)
+
+#### 🐛 Bug Fix
+
+- fix: use dynamic link to resolve package.json and output flat lib directory [#20](https://github.com/piotr-oles/as-proto/pull/20) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.2.6 (Wed Aug 10 2022)
 
 :tada: This release contains work from a new contributor! :tada:
