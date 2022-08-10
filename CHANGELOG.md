@@ -1,3 +1,28 @@
+# v0.2.6 (Wed Aug 10 2022)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Bartosz Pieńkowski ([@pienkowb](https://github.com/pienkowb)), for all your work!
+
+#### 🐛 Bug Fix
+
+- chore: update yarn.lock file [#14](https://github.com/piotr-oles/as-proto/pull/14) ([@piotr-oles](https://github.com/piotr-oles))
+- `as-proto-gen`
+  - Add a file header comment [#18](https://github.com/piotr-oles/as-proto/pull/18) ([@pienkowb](https://github.com/pienkowb))
+  - chore: reformat tests [#14](https://github.com/piotr-oles/as-proto/pull/14) ([@piotr-oles](https://github.com/piotr-oles))
+  - tests: add tests for scope-context.ts [#14](https://github.com/piotr-oles/as-proto/pull/14) ([@piotr-oles](https://github.com/piotr-oles))
+  - tests: improve descriptions in existing tests [#14](https://github.com/piotr-oles/as-proto/pull/14) ([@piotr-oles](https://github.com/piotr-oles))
+  - tests: add tests for reserved-keyword.ts [#14](https://github.com/piotr-oles/as-proto/pull/14) ([@piotr-oles](https://github.com/piotr-oles))
+  - tests: add tests for names.ts [#14](https://github.com/piotr-oles/as-proto/pull/14) ([@piotr-oles](https://github.com/piotr-oles))
+  - chore: setup test environment in as-proto-gen [#14](https://github.com/piotr-oles/as-proto/pull/14) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 2
+
+- Bartosz Pieńkowski ([@pienkowb](https://github.com/pienkowb))
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.2.5 (Sun Jun 26 2022)
 
 #### 🐛 Bug Fix
