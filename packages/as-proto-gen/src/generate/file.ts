@@ -1,12 +1,15 @@
 import { generateMessage } from "./message";
 import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
+import { Version } from "google-protobuf/google/protobuf/compiler/plugin_pb";
 import { FileContext } from "../file-context";
 import { generateEnum } from "./enum";
+import { generateHeaderComment } from "./header";
 import * as assert from "assert";
 
 export function generateFile(
   fileDescriptor: FileDescriptorProto,
-  fileContext: FileContext
+  fileContext: FileContext,
+  compilerVersion: Version | undefined
 ): string {
   const fileName = fileDescriptor.getName();
   assert.ok(fileName);
@@ -36,9 +39,9 @@ export function generateFile(
     }
   }
 
-  return `
-    ${fileContext.getImportsCode()}
-    
-    ${NamespacedTypes}
-  `;
+  return [
+    generateHeaderComment(compilerVersion),
+    fileContext.getImportsCode(),
+    NamespacedTypes
+  ].join("\n");
 }

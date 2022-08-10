@@ -27,6 +27,8 @@ fs.readFile(process.stdin.fd, (error, input) => {
     const codeGenResponse = new CodeGeneratorResponse();
     const generatorContext = new GeneratorContext();
 
+    const compilerVersion = codeGenRequest.getCompilerVersion();
+
     codeGenResponse.setSupportedFeatures(
         CodeGeneratorResponse.Feature.FEATURE_PROTO3_OPTIONAL
     );
@@ -45,7 +47,8 @@ fs.readFile(process.stdin.fd, (error, input) => {
 
       const generatedCode = generateFile(
           fileDescriptor,
-          new FileContext(generatorContext, fileDescriptor)
+          new FileContext(generatorContext, fileDescriptor),
+          compilerVersion
       );
       let formattedCode = generatedCode;
       try {
@@ -66,4 +69,4 @@ fs.readFile(process.stdin.fd, (error, input) => {
   } catch (error) {
     reportErrorAndExit(error);
   }
-})
+});
