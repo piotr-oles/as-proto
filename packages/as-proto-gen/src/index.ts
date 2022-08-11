@@ -14,7 +14,7 @@ const reportErrorAndExit = (error: unknown) => {
   console.log("An error occurred in as-proto generator plugin.");
   console.error(error);
   process.exit(1);
-}
+};
 
 fs.readFile(process.stdin.fd, (error, input) => {
   if (error) {
@@ -31,7 +31,7 @@ fs.readFile(process.stdin.fd, (error, input) => {
     const compilerVersion = codeGenRequest.getCompilerVersion();
 
     codeGenResponse.setSupportedFeatures(
-        CodeGeneratorResponse.Feature.FEATURE_PROTO3_OPTIONAL
+      CodeGeneratorResponse.Feature.FEATURE_PROTO3_OPTIONAL
     );
 
     for (const fileDescriptor of codeGenRequest.getProtoFileList()) {
@@ -43,14 +43,14 @@ fs.readFile(process.stdin.fd, (error, input) => {
 
     for (const fileName of codeGenRequest.getFileToGenerateList()) {
       const fileDescriptor =
-          generatorContext.getFileDescriptorByFileName(fileName);
+        generatorContext.getFileDescriptorByFileName(fileName);
       assert.ok(fileDescriptor);
 
       const generatedCode = generateFile(
-          fileDescriptor,
-          new FileContext(generatorContext, fileDescriptor),
-          compilerOptions,
-          compilerVersion
+        fileDescriptor,
+        new FileContext(generatorContext, fileDescriptor),
+        compilerOptions,
+        compilerVersion
       );
       let formattedCode = generatedCode;
       try {
