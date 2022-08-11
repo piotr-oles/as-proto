@@ -9,6 +9,7 @@ import * as assert from "assert";
 export function generateFile(
   fileDescriptor: FileDescriptorProto,
   fileContext: FileContext,
+  compilerOptions: Set<string>,
   compilerVersion: Version | undefined
 ): string {
   const fileName = fileDescriptor.getName();
@@ -18,7 +19,7 @@ export function generateFile(
 
   const types: string[] = [];
   for (const messageDescriptor of fileDescriptor.getMessageTypeList()) {
-    types.push(generateMessage(messageDescriptor, fileContext));
+    types.push(generateMessage(messageDescriptor, fileContext, compilerOptions));
   }
   for (const enumDescriptor of fileDescriptor.getEnumTypeList()) {
     types.push(generateEnum(enumDescriptor, fileContext));

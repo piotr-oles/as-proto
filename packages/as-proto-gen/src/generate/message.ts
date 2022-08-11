@@ -18,6 +18,7 @@ import { ScopeContext } from "../scope-context";
 export function generateMessage(
   messageDescriptor: DescriptorProto,
   fileContext: FileContext,
+  compilerOptions: Set<string>,
   messageNamespace?: string
 ): string {
   const messageName = messageDescriptor.getName();
@@ -39,12 +40,12 @@ export function generateMessage(
 
   const MessageClass = `
     ${canMessageByUnmanaged(messageDescriptor, fileContext) ? "@unmanaged" : ""}
-    export class ${Message} {      
+    export class ${Message} {
       ${generateEncodeMethod(messageDescriptor, fileContext)}
       ${generateDecodeMethod(messageDescriptor, fileContext)}
-      
+
       ${generateMessageFieldsDeclarations(messageDescriptor, fileContext)}
-      
+
       ${generateMessageConstructor(messageDescriptor, fileContext)}
     }
   `;
@@ -55,6 +56,7 @@ export function generateMessage(
       generateMessage(
         nestedMessageDescriptor,
         fileContext,
+        compilerOptions,
         messageNameWithNamespace
       )
     );
@@ -71,10 +73,15 @@ export function generateMessage(
     `
     : "";
 
-  return `
-    ${MessageClass}
-    ${MessageNamespace}
-  `;
+  const parts = [MessageClass];
+
+  if (compilerOptions.has("gen-helper-methods")) {
+    parts.push(generateHelperMethods(Message, fileContext));
+  }
+
+  parts.push(MessageNamespace);
+
+  return parts.join("\n");
 }
 
 function generateEncodeMethod(
@@ -124,7 +131,7 @@ function generateDecodeMethod(
     static decode(reader: ${Reader}, length: i32): ${Message} {
       const end: usize = length < 0 ? reader.end : reader.ptr + length;
       const message = new ${Message}();
-      
+
       while (reader.ptr < end) {
         const tag = reader.uint32();
         switch (tag >>> 3) {
@@ -138,13 +145,13 @@ function generateDecodeMethod(
                 )}`
             )
             .join("\n")}
-          
+
           default:
             reader.skipType(tag & 7);
             break;
         }
       }
-              
+
       return message;
     }
   `;
@@ -233,4 +240,21 @@ function canMessageByUnmanaged(
       return false;
     }
   });
+}
+
+function generateHelperMethods(message: string, fileContext: FileContext): string {
+  const Protobuf = fileContext.registerImport("Protobuf", "as-proto");
+
+  const encodeHelper = fileContext.registerDefinition(`encode${message}`);
+  const decodeHelper = fileContext.registerDefinition(`decode${message}`);
+
+  return `
+    export function ${encodeHelper}(message: ${message}): Uint8Array {
+      return ${Protobuf}.encode(message, ${message}.encode);
+    }
+
+    export function ${decodeHelper}(buffer: Uint8Array): ${message} {
+      return ${Protobuf}.decode<${message}>(buffer, ${message}.decode);
+    }
+  `;
 }

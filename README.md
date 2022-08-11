@@ -104,6 +104,23 @@ export class StarRepoMessage {
 
 </details>
 
+### Helper methods
+In order to generate helper methods for encoding and decoding a message, pass the `gen-helper-methods` option with the `as_opt` parameter:
+```sh
+protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_opt=gen-helper-methods --as_out=. ./file.proto
+```
+
+This will add the following methods in a generated file:
+```typescript
+export function encodeStarRepoMessage(message: StarRepoMessage): Uint8Array {
+  return Protobuf.encode(message, StarRepoMessage.encode);
+}
+
+export function decodeStarRepoMessage(buffer: Uint8Array): StarRepoMessage {
+  return Protobuf.decode<StarRepoMessage>(buffer, StarRepoMessage.decode);
+}
+```
+
 ## Usage
 To encode and decode protobuf messages, all you need is `Protobuf` class and
 generated message class:
@@ -122,7 +139,22 @@ assert(encoded instanceof Uint8Array);
 const decoded = Protobuf.decode(encoded, StarRepoMessage.decode);
 assert(decoded instanceof StarRepoMessage);
 assert(decoded.author === 'piotr-oles');
-assert(decoded.repo === 'as-proto')
+assert(decoded.repo === 'as-proto');
+```
+
+If the helper methods were generated, they can be used to reduce boilerplate code:
+
+```typescript
+import {
+  StarRepoMessage,
+  encodeStarRepoMessage,
+  decodeStarRepoMessage
+} from './star-repo-message'; // generated file
+
+const message = new StarRepoMessage('piotr-oles', 'as-proto');
+
+const encoded = encodeStarRepoMessage(message);
+const decoded = decodeStarRepoMessage(encoded);
 ```
 
 Currently the package doesn't support GRPC definitions - only basic Protobuf messages.
