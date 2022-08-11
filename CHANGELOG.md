@@ -1,3 +1,16 @@
+# v0.3.0 (Thu Aug 11 2022)
+
+#### 🚀 Enhancement
+
+- `as-proto-gen`
+  - Generate helper methods for encoding and decoding [#19](https://github.com/piotr-oles/as-proto/pull/19) ([@pienkowb](https://github.com/pienkowb))
+
+#### Authors: 1
+
+- Bartosz Pieńkowski ([@pienkowb](https://github.com/pienkowb))
+
+---
+
 # v0.2.7 (Wed Aug 10 2022)
 
 #### 🐛 Bug Fix
