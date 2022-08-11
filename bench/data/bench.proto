@@ -9,9 +9,9 @@ message Test {
 
     message Inner {
 
-        int32      int32      = 1;
-        InnerInner innerInner = 2;
-        Outer      outer      = 3;
+        int32      int32       = 1;
+        InnerInner inner_inner = 2;
+        Outer      outer       = 3;
 
         message InnerInner {
 

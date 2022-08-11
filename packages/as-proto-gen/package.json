@@ -28,8 +28,10 @@
     "ts-node": "^10.8.1"
   },
   "dependencies": {
+    "@types/humps": "^2.0.2",
     "fs-extra": "^10.1.0",
     "google-protobuf": "^3.19.2",
+    "humps": "^2.0.1",
     "prettier": "^2.5.0",
     "ts-poet": "^4.9.0"
   },
