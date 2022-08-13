@@ -1,5 +1,6 @@
 import { FieldDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
 import * as assert from "assert";
+import { camelize } from "humps";
 
 import { generateRef } from "./ref";
 import { FileContext } from "../file-context";
@@ -164,7 +165,7 @@ export function generateFieldName(
   const fieldName = fieldDescriptor.getName();
   assert.ok(fieldName);
 
-  return fieldName;
+  return camelize(fieldName);
 }
 
 export function generateFieldTypeBasic(
