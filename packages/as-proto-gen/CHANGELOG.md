@@ -1,3 +1,15 @@
+# v0.4.0 (Sat Aug 13 2022)
+
+#### 🚀 Enhancement
+
+- Convert field names to camel case [#21](https://github.com/piotr-oles/as-proto/pull/21) ([@pienkowb](https://github.com/pienkowb))
+
+#### Authors: 1
+
+- Bartosz Pieńkowski ([@pienkowb](https://github.com/pienkowb))
+
+---
+
 # v0.3.0 (Thu Aug 11 2022)
 
 #### 🚀 Enhancement
