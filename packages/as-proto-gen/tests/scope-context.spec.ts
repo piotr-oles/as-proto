@@ -1,8 +1,13 @@
 import test from "ava";
 import { ScopeContext } from "../src/scope-context";
 import { FileContext } from "../src/file-context";
+import { GeneratorContext } from "../src/generator-context";
+import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
 
-const fileContext: FileContext = {} as FileContext;
+const fileContext = new FileContext(
+  {} as GeneratorContext,
+  {} as FileDescriptorProto,
+);
 
 test("ScopeContext.getFileContext() returns file context passed to constructor", (t) => {
   const scopeContext = new ScopeContext(fileContext);
