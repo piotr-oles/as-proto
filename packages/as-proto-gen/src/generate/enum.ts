@@ -7,12 +7,13 @@ import * as assert from "assert";
 
 export function generateEnum(
   enumDescriptor: EnumDescriptorProto,
-  fileContext: FileContext
+  fileContext: FileContext,
+  enumNamespace?: string
 ): string {
   const enumName = enumDescriptor.getName();
   assert.ok(enumName !== undefined);
 
-  const Enum = fileContext.registerDefinition(enumName);
+  const Enum = fileContext.registerDefinition(enumName, enumNamespace);
   const enumValues = enumDescriptor.getValueList();
 
   return `

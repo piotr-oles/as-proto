@@ -17,6 +17,8 @@ export class GeneratorContext {
   private typeNameToMessageDescriptor: Map<FieldTypeName, DescriptorProto> =
     new Map();
 
+  private protoDependencies: Set<string> = new Set();
+
   registerFile(fileDescriptor: FileDescriptorProto): void {
     const fileName = fileDescriptor.getName();
     if (fileName) {
@@ -92,6 +94,14 @@ export class GeneratorContext {
     const fieldTypeName = getFieldTypeName(filePackage, enumNameWithNamespace);
 
     this.typeNameToFileDescriptor.set(fieldTypeName, fileDescriptor);
+  }
+
+  addProtoDependency(fileName: string) {
+    this.protoDependencies.add(fileName);
+  }
+
+  getProtoDependencies(): IterableIterator<string> {
+    return this.protoDependencies.values();
   }
 
   getFileDescriptorByFileName(

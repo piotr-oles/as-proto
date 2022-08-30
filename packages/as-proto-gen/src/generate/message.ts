@@ -36,7 +36,7 @@ export function generateMessage(
     return "";
   }
 
-  const Message = fileContext.registerDefinition(messageName);
+  const Message = fileContext.registerDefinition(messageName, messageNamespace);
 
   const MessageClass = `
     ${canMessageByUnmanaged(messageDescriptor, fileContext) ? "@unmanaged" : ""}
@@ -62,7 +62,9 @@ export function generateMessage(
     );
   }
   for (const nestedEnumDescriptor of messageDescriptor.getEnumTypeList()) {
-    nested.push(generateEnum(nestedEnumDescriptor, fileContext));
+    nested.push(
+      generateEnum(nestedEnumDescriptor, fileContext, messageNameWithNamespace)
+    );
   }
 
   const MessageNamespace = nested.length
@@ -242,7 +244,10 @@ function canMessageByUnmanaged(
   });
 }
 
-function generateHelperMethods(message: string, fileContext: FileContext): string {
+function generateHelperMethods(
+  message: string,
+  fileContext: FileContext
+): string {
   const Protobuf = fileContext.registerImport("Protobuf", "as-proto");
 
   const encodeHelper = fileContext.registerDefinition(`encode${message}`);

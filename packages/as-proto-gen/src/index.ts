@@ -3,10 +3,9 @@ import {
   CodeGeneratorResponse,
 } from "google-protobuf/google/protobuf/compiler/plugin_pb";
 import { GeneratorContext } from "./generator-context";
-import { generateFile } from "./generate/file";
+import { generateFile, addFile, generateExport } from "./generate/file";
 import { getPathWithoutProto } from "./names";
 import { FileContext } from "./file-context";
-import prettier from "prettier";
 import * as fs from "fs-extra";
 import * as assert from "assert";
 
@@ -49,23 +48,49 @@ fs.readFile(process.stdin.fd, (error, input) => {
       const generatedCode = generateFile(
         fileDescriptor,
         new FileContext(generatorContext, fileDescriptor),
-        compilerOptions,
+        compilerOptions
+      );
+
+      addFile(
+        getPathWithoutProto(fileName) + ".ts",
+        generatedCode,
+        codeGenResponse,
         compilerVersion
       );
-      let formattedCode = generatedCode;
-      try {
-        formattedCode = prettier.format(generatedCode, {
-          parser: "typescript",
-        });
-      } catch (error) {
-        console.error(error);
-      }
-
-      const outputFile = new CodeGeneratorResponse.File();
-      outputFile.setName(getPathWithoutProto(fileName) + ".ts");
-      outputFile.setContent(formattedCode);
-      codeGenResponse.addFile(outputFile);
     }
+
+    if (compilerOptions.has("gen-dependencies")) {
+      for (const fileName of generatorContext.getProtoDependencies()) {
+        if (codeGenRequest.getFileToGenerateList().includes(fileName)) {
+          continue;
+        }
+
+        const fileDescriptor =
+          generatorContext.getFileDescriptorByFileName(fileName);
+        assert.ok(fileDescriptor);
+
+        const generatedCode = generateFile(
+          fileDescriptor,
+          new FileContext(generatorContext, fileDescriptor),
+          compilerOptions
+        );
+
+        addFile(
+          getPathWithoutProto(fileName) + ".ts",
+          generatedCode,
+          codeGenResponse,
+          compilerVersion
+        );
+        codeGenRequest.addFileToGenerate(fileName);
+      }
+    }
+
+    generateExport(
+      codeGenRequest,
+      codeGenResponse,
+      generatorContext,
+      compilerVersion
+    );
 
     process.stdout.write(Buffer.from(codeGenResponse.serializeBinary().buffer));
   } catch (error) {

@@ -20,7 +20,7 @@ export class ScopeContext {
   getFreeName(preferredName: string): string {
     let freeName = this.getSafeName(preferredName);
     let freeSuffix = 2;
-    while (this.reservedNames.has(freeName)) {
+    while (this.reservedNames.has(freeName) || this.isImported(freeName)) {
       freeName = `${preferredName}_${freeSuffix++}`;
     }
     return freeName;
@@ -30,6 +30,13 @@ export class ScopeContext {
    * Suffixes name if it's a reserved keyword
    */
   getSafeName(name: string): string {
-    return isReservedKeyword(name) ? `${name}_` : name;
+    return isReservedKeyword(name) || this.isImported(name) ? `${name}_` : name;
+  }
+
+  /**
+   * Checks if there's an import statement with a given name.
+   */
+  isImported(name: string): boolean {
+    return this.fileContext.hasImportName(name);
   }
 }

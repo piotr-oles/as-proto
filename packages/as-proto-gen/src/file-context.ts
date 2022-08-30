@@ -1,5 +1,6 @@
 import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
 import { GeneratorContext } from "./generator-context";
+import { isRelativeImport, ensureRelativeImportDot } from "./names";
 
 export class FileContext {
   private readonly generatorContext: GeneratorContext;
@@ -26,6 +27,11 @@ export class FileContext {
   }
 
   registerImport(importNamePath: string, importPath: string): string {
+    [importNamePath, importPath] = this.getRelativeImportPath(
+      importNamePath,
+      importPath
+    );
+
     const [importName, ...importNamespace] = importNamePath.split(".");
 
     if (!importName) {
@@ -40,12 +46,21 @@ export class FileContext {
 
     importNames.set(importName, uniqueImportName);
     this.registeredImports.set(importPath, importNames);
+    this.importNames.add(uniqueImportName);
 
     return [uniqueImportName, ...importNamespace].join(".");
   }
 
-  registerDefinition(definitionNamePath: string): string {
-    const [definitionName] = definitionNamePath.split(".");
+  hasImportName(importName: string): boolean {
+    return this.importNames.has(importName);
+  }
+
+  registerDefinition(definitionNamePath: string, namespace?: string): string {
+    let [definitionName] = definitionNamePath.split(".");
+
+    definitionName = namespace
+      ? `${namespace}.${definitionName}`
+      : definitionName;
 
     if (!this.registeredDefinitions.has(definitionName)) {
       if (this.importNames.has(definitionName)) {
@@ -68,6 +83,10 @@ export class FileContext {
     return definitionNamePath;
   }
 
+  hasDefinition(definitionName: string): boolean {
+    return this.registeredDefinitions.has(definitionName);
+  }
+
   getImportsCode(): string {
     let importLines: string[] = [];
     for (const [importPath, importNames] of this.registeredImports) {
@@ -86,6 +105,47 @@ export class FileContext {
     }
 
     return importLines.join("\n");
+  }
+
+  getRelativeImportPath(
+    importNamePath: string,
+    importPath: string
+  ): [string, string] {
+    if (isRelativeImport(importPath)) {
+      const importName = importNamePath.split(".");
+      const fileDescriptorPaths = (this.fileDescriptor.getName() || "").split(
+        "/"
+      );
+      const importPaths = importPath.split("/");
+      const returnPath = importPath.split("/");
+      let done = false;
+      let sliceLen = 1;
+
+      if (importPaths[0] == ".") {
+        importPaths.shift();
+        returnPath.shift();
+      }
+
+      for (let i = 0; i < fileDescriptorPaths.length - 1; i++) {
+        if (fileDescriptorPaths[i] === importPaths[i] && !done) {
+          returnPath.shift();
+          if (importName.length > 1) {
+            importName.shift();
+          }
+        } else {
+          returnPath.unshift("..");
+          sliceLen++;
+          done = true;
+        }
+      }
+
+      return [
+        importName.join("."),
+        ensureRelativeImportDot(returnPath.slice(0, sliceLen).join("/")),
+      ];
+    }
+
+    return [importNamePath, importPath];
   }
 
   private getUniqueName(importName: string): string {
