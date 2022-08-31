@@ -58,9 +58,9 @@ export class FileContext {
   registerDefinition(definitionNamePath: string, namespace?: string): string {
     let [definitionName] = definitionNamePath.split(".");
 
-    definitionName = namespace
-      ? `${namespace}.${definitionName}`
-      : definitionName;
+    if (namespace) {
+      definitionName = `${namespace}.${definitionName}`;
+    }
 
     if (!this.registeredDefinitions.has(definitionName)) {
       if (this.importNames.has(definitionName)) {

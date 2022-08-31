@@ -36,7 +36,9 @@ export function getTypeName(fieldTypeName: string): string {
  * Ensures that relative import has dot at the beginning.
  */
 export function ensureRelativeImportDot(importName: string): string {
-  return importName.startsWith(".") || importName.startsWith("/") ? importName : `./${importName}`;
+  return importName.startsWith(".") || importName.startsWith("/")
+    ? importName
+    : `./${importName}`;
 }
 
 /**

@@ -6,7 +6,7 @@ import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_
 
 const fileContext = new FileContext(
   {} as GeneratorContext,
-  {} as FileDescriptorProto,
+  {} as FileDescriptorProto
 );
 
 test("ScopeContext.getFileContext() returns file context passed to constructor", (t) => {

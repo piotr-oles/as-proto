@@ -3,7 +3,7 @@ import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_
 import {
   CodeGeneratorRequest,
   CodeGeneratorResponse,
-  Version
+  Version,
 } from "google-protobuf/google/protobuf/compiler/plugin_pb";
 import { FileContext } from "../file-context";
 import { generateEnum } from "./enum";
@@ -32,10 +32,10 @@ export function generateFile(
     types.push(generateEnum(enumDescriptor, fileContext));
   }
 
-  return [
-    fileContext.getImportsCode(),
-    types.join("\n\n"),
-  ].join("\n");
+  const importsCode = fileContext.getImportsCode();
+  const typesCode = types.join("\n\n");
+
+  return [importsCode, typesCode].join("\n");
 }
 
 export function addFile(
@@ -79,8 +79,7 @@ export function generateExport(
 
     const filePath = getPathWithoutProto(filename).split("/");
 
-    // Generate the map of file for the _export.ts file and the path they
-    // should each export
+    // Generate a file map for `_export.ts`
     for (let i = 1; i < filePath.length; i++) {
       const exportFilePath = path.join(...filePath.slice(0, i));
       const toExportPath = filePath[i] as string;
@@ -91,19 +90,18 @@ export function generateExport(
       }
     }
 
-    // Generate the map of file for index.ts file and the pkg they should
-    // each import and re-export
+    // Generate a file map for `index.ts`
     for (let i = 0; i < filePath.length - 1; i++) {
-      const indexFilePath = path.join(...filePath.slice(0, i + 1));
       let pkg = packages[i];
+
+      // If a file does not define a package, put it in a package named
+      // after its directory
       if (pkg == undefined || pkg == "") {
-        // When the file is not defining a package we include it
-        // in a package named after the directory
         pkg = filePath[i] as string;
       }
 
-      // We can have more than one element in the set if proto file in the
-      // same directory are in different package.
+      const indexFilePath = path.join(...filePath.slice(0, i + 1));
+
       if (indexFileMap.has(indexFilePath)) {
         indexFileMap.get(indexFilePath)?.add(pkg);
       } else {
@@ -112,39 +110,47 @@ export function generateExport(
     }
   }
 
-  // Generate the _export.ts files
-  for (const filepath of exportFileMap.keys()) {
-    const filename = path.join(filepath, "_export.ts");
+  // Generate the `_export.ts` files
+  for (const filePath of exportFileMap.keys()) {
     let code: string = "";
-    const exportPath = exportFileMap.get(filepath) as Set<string>;
+    const exportPath = exportFileMap.get(filePath) as Set<string>;
+
     for (const target of exportPath.values()) {
-      // Get the package name from the indexFileMap if it exist.
-      // Otherwise we export "*".
-      const exportName = indexFileMap.get(path.join(filepath, target));
+      // Get the package name from a file map (if it exists)
+      // Otherwise, export `*`
+      const exportName = indexFileMap.get(path.join(filePath, target));
+
       if (exportName) {
-        code += `export { ${[...exportName].join(
-          ", "
-        )} } from "./${target}";\n`;
+        const exports = [...exportName].join(", ");
+        code += `export { ${exports} } from "./${target}";\n`;
       } else {
         code += `export * from "./${target}";\n`;
       }
     }
+
+    const filename = path.join(filePath, "_export.ts");
+
     addFile(filename, code, codeGenResponse, compilerVersion);
   }
 
-  // Generate the index.ts files
+  // Generate the `index.ts` files
   let rootIndex = "";
+
   for (const [filepath, pkgs] of indexFileMap) {
-    const filename = path.join(filepath, "index.ts");
     let code: string = "";
+
     for (const target of pkgs) {
       code += `import * as ${target} from "./_export";\n`;
     }
+    code += "\n";
     code += `export { ${[...pkgs].join(", ")} };\n`;
+
+    const filename = path.join(filepath, "index.ts");
+
     addFile(filename, code, codeGenResponse, compilerVersion);
 
-    // Add export for rootIndex file
-    if (filepath.split("/").length == 1) {
+    // Add an export for the root index file
+    if (filepath.split("/").length === 1) {
       rootIndex += `export { ${[...pkgs].join(", ")} } from "./${filepath}";\n`;
     }
   }
