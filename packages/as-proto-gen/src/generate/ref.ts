@@ -1,4 +1,8 @@
-import { getPathWithoutProto, ensureRelativeImportDot, getTypeName } from "../names";
+import {
+  getPathWithoutProto,
+  ensureRelativeImportDot,
+  getTypeName,
+} from "../names";
 import { FileContext } from "../file-context";
 import * as assert from "assert";
 import { FieldDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
@@ -19,13 +23,14 @@ export function generateRef(
   const typeName = getTypeName(fieldTypeName);
 
   if (isSameFile) {
-    const types = typeName.split(".");
-    for (let i = 0; i < types.length - 1; i++) {
-      if (fileContext.hasDefinition(types.slice(i).join("."))) {
-        return types.slice(i).join(".");
-      }
-    }
-    return fileContext.registerDefinition(typeName.split(".").at(-1) as string);
+    const nestingLevel = fileContext
+      .getGeneratorContext()
+      .getNestingLevelByFieldTypeName(fieldTypeName);
+    assert.ok(nestingLevel !== undefined);
+
+    return fileContext.registerDefinition(
+      stripPackageNamespace(typeName, nestingLevel)
+    );
   } else {
     const fileName = fileDescriptor.getName();
     assert.ok(fileName);
@@ -37,4 +42,11 @@ export function generateRef(
       ensureRelativeImportDot(getPathWithoutProto(fileName))
     );
   }
+}
+
+function stripPackageNamespace(typeName: string, nestingLevel: number): string {
+  return typeName
+    .split(".")
+    .slice(-1 - nestingLevel)
+    .join(".");
 }

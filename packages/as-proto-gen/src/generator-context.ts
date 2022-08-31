@@ -16,6 +16,7 @@ export class GeneratorContext {
     new Map();
   private typeNameToMessageDescriptor: Map<FieldTypeName, DescriptorProto> =
     new Map();
+  private typeNameToNestingLevel: Map<FieldTypeName, number> = new Map();
 
   private protoDependencies: Set<string> = new Set();
 
@@ -55,8 +56,13 @@ export class GeneratorContext {
       filePackage,
       messageNameWithNamespace
     );
+    const nestingLevel = messageNamespace
+      ? messageNamespace.split(".").length
+      : 0;
+
     this.typeNameToFileDescriptor.set(fieldTypeName, fileDescriptor);
     this.typeNameToMessageDescriptor.set(fieldTypeName, messageDescriptor);
+    this.typeNameToNestingLevel.set(fieldTypeName, nestingLevel);
 
     for (const nestedMessageDescriptor of messageDescriptor.getNestedTypeList()) {
       this.registerMessage(
@@ -92,8 +98,10 @@ export class GeneratorContext {
       ? `${enumNamespace}.${enumName}`
       : enumName;
     const fieldTypeName = getFieldTypeName(filePackage, enumNameWithNamespace);
+    const nestingLevel = enumNamespace ? enumNamespace.split(".").length : 0;
 
     this.typeNameToFileDescriptor.set(fieldTypeName, fileDescriptor);
+    this.typeNameToNestingLevel.set(fieldTypeName, nestingLevel);
   }
 
   addProtoDependency(fileName: string) {
@@ -120,5 +128,9 @@ export class GeneratorContext {
     fieldTypeName: string
   ): DescriptorProto | undefined {
     return this.typeNameToMessageDescriptor.get(fieldTypeName);
+  }
+
+  getNestingLevelByFieldTypeName(fieldTypeName: string): number | undefined {
+    return this.typeNameToNestingLevel.get(fieldTypeName);
   }
 }
