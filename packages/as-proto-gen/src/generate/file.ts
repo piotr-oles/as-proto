@@ -95,7 +95,7 @@ export function generateExport(
       let pkg = packages[i];
 
       // If a file does not define a package, put it in a package named
-      // after its directory
+      // after the directory
       if (pkg == undefined || pkg == "") {
         pkg = filePath[i] as string;
       }

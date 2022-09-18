@@ -26,17 +26,16 @@ export class FileContext {
     return this.fileDescriptor;
   }
 
-  registerImport(importNamePath: string, importPath: string): string {
-    [importNamePath, importPath] = this.getRelativeImportPath(
-      importNamePath,
-      importPath
-    );
+  registerImport(importRef: string, importPath: string): string {
+    if (isRelativeImport(importPath)) {
+      [importRef, importPath] = this.adjustImport(importRef, importPath);
+    }
 
-    const [importName, ...importNamespace] = importNamePath.split(".");
+    const [importName, ...importNamespace] = importRef.split(".");
 
     if (!importName) {
       throw new Error(
-        `Cannot register empty import of ${importNamePath} from ${importPath}.`
+        `Cannot register empty import of ${importRef} from ${importPath}.`
       );
     }
     const importNames =
@@ -107,45 +106,50 @@ export class FileContext {
     return importLines.join("\n");
   }
 
-  getRelativeImportPath(
-    importNamePath: string,
-    importPath: string
-  ): [string, string] {
-    if (isRelativeImport(importPath)) {
-      const importName = importNamePath.split(".");
-      const fileDescriptorPaths = (this.fileDescriptor.getName() || "").split(
-        "/"
-      );
-      const importPaths = importPath.split("/");
-      const returnPath = importPath.split("/");
-      let done = false;
-      let sliceLen = 1;
+  adjustImport(importRef: string, importPath: string): [string, string] {
+    const filePath = this.fileDescriptor.getName() || "";
 
-      if (importPaths[0] == ".") {
-        importPaths.shift();
-        returnPath.shift();
-      }
+    const filePathParts = filePath.split("/");
+    const importPathParts = importPath.split("/");
+    const importRefParts = importRef.split(".");
 
-      for (let i = 0; i < fileDescriptorPaths.length - 1; i++) {
-        if (fileDescriptorPaths[i] === importPaths[i] && !done) {
-          returnPath.shift();
-          if (importName.length > 1) {
-            importName.shift();
-          }
-        } else {
-          returnPath.unshift("..");
-          sliceLen++;
-          done = true;
-        }
-      }
+    filePathParts.pop(); // Skip the filename
 
-      return [
-        importName.join("."),
-        ensureRelativeImportDot(returnPath.slice(0, sliceLen).join("/")),
-      ];
+    if (importPathParts[0] === ".") {
+      importPathParts.shift(); // Skip a leading dot
     }
 
-    return [importNamePath, importPath];
+    // Find the common path between the source file and the imported file
+    const commonPathLength = this.commonPrefixLength(
+      filePathParts,
+      importPathParts
+    );
+
+    // Remove the common path from the import reference
+    importRefParts.splice(0, commonPathLength);
+
+    // Adjust the import path based on the difference in nesting level
+    const importedModule = importPathParts[commonPathLength];
+    const nestingDiff = filePathParts.length - commonPathLength;
+    const adjustedImportPath = "../".repeat(nestingDiff) + importedModule;
+
+    return [
+      importRefParts.join("."),
+      ensureRelativeImportDot(adjustedImportPath),
+    ];
+  }
+
+  /**
+   * @returns the index of the first element that differs between arrays,
+   * which equals to the number of common elements at the beginning.
+   */
+  private commonPrefixLength<T>(array: T[], otherArray: T[]): number {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] !== otherArray[i]) {
+        return i;
+      }
+    }
+    return array.length;
   }
 
   private getUniqueName(importName: string): string {
