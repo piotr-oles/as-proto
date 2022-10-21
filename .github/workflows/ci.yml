@@ -14,6 +14,9 @@ jobs:
         with:
           node-version: 16
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
