@@ -17,11 +17,7 @@
   "files": [
     "assembly"
   ],
-  "devDependencies": {
-    "@as-pect/cli": "^6.2.4"
-  },
   "scripts": {
-    "test": "asp --verbose",
     "build": "echo 'no build in as-proto package'",
     "prepublishOnly": "cp ../../README.md ./"
   }

@@ -1,5 +1,5 @@
 import test from "ava";
-import { isReservedKeyword } from "../src/reserved-keywords";
+import { isReservedKeyword } from "../../packages/as-proto-gen/src/reserved-keywords";
 
 test("isReservedKeyword() returns true for reserved keyword", (t) => {
   t.true(isReservedKeyword("for"));

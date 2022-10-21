@@ -1,6 +1,6 @@
 import test from "ava";
-import { ScopeContext } from "../src/scope-context";
-import { FileContext } from "../src/file-context";
+import { ScopeContext } from "../../packages/as-proto-gen/src/scope-context";
+import { FileContext } from "../../packages/as-proto-gen/src/file-context";
 
 const fileContext: FileContext = {} as FileContext;
 
