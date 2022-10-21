@@ -1,0 +1,20 @@
+{
+  "targets": {
+    "debug": {
+      "sourceMap": true,
+      "debug": true,
+      "runtime": "incremental",
+      "exportRuntime": true,
+      "noAssert": false
+    },
+    "release": {
+      "sourceMap": true,
+      "optimizeLevel": 3,
+      "runtime": "incremental",
+      "exportRuntime": true,
+      "converge": false,
+      "noAssert": false
+    }
+  },
+  "options": {}
+}
