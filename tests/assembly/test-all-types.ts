@@ -1,5 +1,5 @@
 import { asproto } from "./proto/testbinary";
-import { Protobuf } from "as-proto";
+import { Protobuf } from "as-proto/assembly";
 
 function createTestAllTypesMessage(): asproto.test.TestAllTypes {
   const BYTES = new Uint8Array(4);
