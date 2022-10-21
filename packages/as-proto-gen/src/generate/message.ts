@@ -91,7 +91,7 @@ function generateEncodeMethod(
   const messageName = messageDescriptor.getName();
   assert.ok(messageName);
 
-  const Writer = fileContext.registerImport("Writer", "as-proto");
+  const Writer = fileContext.registerImport("Writer", "as-proto/assembly");
   const Message = fileContext.registerDefinition(messageName);
 
   const scopeContext = new ScopeContext(fileContext, ["message", "writer"]);
@@ -116,7 +116,7 @@ function generateDecodeMethod(
   const messageName = messageDescriptor.getName();
   assert.ok(messageName);
 
-  const Reader = fileContext.registerImport("Reader", "as-proto");
+  const Reader = fileContext.registerImport("Reader", "as-proto/assembly");
   const Message = fileContext.registerDefinition(messageName);
 
   const scopeContext = new ScopeContext(fileContext, [
@@ -246,7 +246,7 @@ function generateHelperMethods(
   message: string,
   fileContext: FileContext
 ): string {
-  const Protobuf = fileContext.registerImport("Protobuf", "as-proto");
+  const Protobuf = fileContext.registerImport("Protobuf", "as-proto/assembly");
 
   const encodeHelper = fileContext.registerDefinition(`encode${message}`);
   const decodeHelper = fileContext.registerDefinition(`decode${message}`);

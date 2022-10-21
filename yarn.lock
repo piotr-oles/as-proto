@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@assemblyscript/loader@^0.19.20":
-  version "0.19.22"
-  resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.19.22.tgz#4a749ffde43865d1b314dce99fe0cf440cd85dc5"
-  integrity sha512-ksrMVpPOatD7ZzXCw+c/g3zId5rm8MMnQe7P32dH/qtDrgT9SbQjJYEngRP0YhRF0qrBCga2PtpID7arqphGyg==
+"@assemblyscript/loader@^0.21.7":
+  version "0.21.7"
+  resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.21.7.tgz#bf00f0a1b6555f5ae51ecbc6d7f0775bdd22cb87"
+  integrity sha512-T0Ako85Yqlxe0PzJT1bJEpv7zxEdnJ1hhQQclLCUYQ7lJUDD79e26CwDLIDGdQYIaG7lDnQyZEWbg8IYtqhXqA==
 
 "@auto-it/bot-list@10.32.5":
   version "10.32.5"
@@ -1551,14 +1551,13 @@ asap@^2.0.0:
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
   integrity sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==
 
-assemblyscript@^0.19.20:
-  version "0.19.22"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.19.22.tgz#ef7eb8939864bd1b7603a9772e8f32e1fcfb8975"
-  integrity sha512-+Rclbx0+BI3qAe9fjc8XGbSUDaayTtjINnD19I4MmfpT2R43c9YTQERP36676shkPxb1fisDFZeSTL65Da8Q2g==
+assemblyscript@^0.21.7:
+  version "0.21.7"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.21.7.tgz#feef0b77b8df75175cb8f845f9b4ac2f01eed0ca"
+  integrity sha512-GPKavCMUVZbrU31KTBMtnsRZa9pPN10ApfkPGNdL70Qpu/rORbTCte/37dnIUnQdXHm+5vHmG+iGRWmwJO5hvA==
   dependencies:
-    binaryen "102.0.0-nightly.20211028"
+    binaryen "110.0.0-nightly.20221006"
     long "^5.2.0"
-    source-map-support "^0.5.20"
 
 at-least-node@^1.0.0:
   version "1.0.0"
@@ -1678,10 +1677,10 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
-binaryen@102.0.0-nightly.20211028:
-  version "102.0.0-nightly.20211028"
-  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-102.0.0-nightly.20211028.tgz#8f1efb0920afd34509e342e37f84313ec936afb2"
-  integrity sha512-GCJBVB5exbxzzvyt8MGDv/MeUjs6gkXDvf4xOIItRBptYl0Tz5sm1o/uG95YK0L0VeG5ajDu3hRtkBP2kzqC5w==
+binaryen@110.0.0-nightly.20221006:
+  version "110.0.0-nightly.20221006"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-110.0.0-nightly.20221006.tgz#c621d1ead620196e4b18e4ef3664b1ee807af7d0"
+  integrity sha512-yC7ZLoaZmXhm5cB0+g3rZkz5ujPSlhX+FEQtgaQHVxcL78D8cTXdRSdajhgQD345BVPsooOrSxqhX6tnULgBWg==
 
 blueimp-md5@^2.10.0:
   version "2.19.0"
@@ -5189,7 +5188,7 @@ sort-keys@^4.0.0:
   dependencies:
     is-plain-obj "^2.0.0"
 
-source-map-support@^0.5.17, source-map-support@^0.5.20:
+source-map-support@^0.5.17:
   version "0.5.21"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
   integrity sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==

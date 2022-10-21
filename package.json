@@ -12,7 +12,7 @@
     "postinstall": "lerna bootstrap",
     "build": "lerna run build",
     "test:generate": "cd tests && protoc --plugin='protoc-gen-as=../packages/as-proto-gen/bin/as-proto-gen' --as_out='./assembly' ./proto/*.proto && protoc --js_out=import_style=commonjs,binary:./js ./proto/*.proto && cd ..",
-    "test:build": "cd tests && asc assembly/test-all-types.ts --binaryFile=assembly/test-all-types.wasm --exportRuntime && cd ..",
+    "test:build": "cd tests && asc assembly/test-all-types.ts --outFile=assembly/test-all-types.wasm --exportRuntime && cd ..",
     "test:prepare": "yarn test:generate && yarn test:build",
     "test": "yarn test:prepare && ava",
     "release": "auto shipit",
@@ -22,10 +22,10 @@
     "bench": "yarn bench:prepare && node bench"
   },
   "devDependencies": {
-    "@assemblyscript/loader": "^0.19.20",
+    "@assemblyscript/loader": "^0.21.7",
     "@auto-it/conventional-commits": "^10.32.5",
     "@auto-it/first-time-contributor": "^10.32.5",
-    "assemblyscript": "^0.19.20",
+    "assemblyscript": "^0.21.7",
     "auto": "^10.32.5",
     "benchmark": "^2.1.4",
     "chalk": "^4.0.0",

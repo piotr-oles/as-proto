@@ -9,6 +9,7 @@
     "release": {
       "sourceMap": true,
       "optimizeLevel": 3,
+      "shrinkLevel": 0,
       "runtime": "incremental",
       "exportRuntime": true,
       "converge": false,

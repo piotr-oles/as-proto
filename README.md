@@ -57,7 +57,7 @@ message StarRepoMessage {
 //   protoc-gen-as v0.2.5
 //   protoc        v3.21.4
 
-import { Writer, Reader } from "as-proto";
+import { Writer, Reader } from "as-proto/assembly";
 
 export class StarRepoMessage {
   static encode(message: StarRepoMessage, writer: Writer): void {
@@ -126,7 +126,7 @@ To encode and decode protobuf messages, all you need is `Protobuf` class and
 generated message class:
 
 ```typescript
-import { Protobuf } from 'as-proto';
+import { Protobuf } from 'as-proto/assembly';
 import { StarRepoMessage } from './star-repo-message'; // generated file
 
 const message = new StarRepoMessage('piotr-oles', 'as-proto');
