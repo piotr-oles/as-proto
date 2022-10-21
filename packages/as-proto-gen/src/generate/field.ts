@@ -114,8 +114,7 @@ export function generateFieldDecodeInstruction(
     if (isRepeated && isPacked) {
       return `
         case ${fieldNumber}:
-          const repeatedEnd: usize = reader.ptr + reader.uint32();
-          while (reader.ptr < repeatedEnd) {
+          for (const end: usize = reader.ptr + reader.uint32(); reader.ptr < end;) {
             message.${fieldName}.push(${Message}.decode(reader, reader.uint32()));
           }
           break;
@@ -137,8 +136,7 @@ export function generateFieldDecodeInstruction(
     if (isRepeated && isPacked) {
       return `
         case ${fieldNumber}:
-          const repeatedEnd: usize = reader.ptr + reader.uint32();
-          while (reader.ptr < repeatedEnd) {
+          for (const end: usize = reader.ptr + reader.uint32(); reader.ptr < end;) {
             message.${fieldName}.push(reader.${fieldTypeInstruction}());
           }
           break;
@@ -225,7 +223,8 @@ export function generateFieldType(
 }
 
 export function generateFieldDefaultValue(
-  fieldDescriptor: FieldDescriptorProto
+  fieldDescriptor: FieldDescriptorProto,
+  fileContext: FileContext
 ): string {
   const isRepeated = fieldDescriptor.getLabel() === Label.LABEL_REPEATED;
   const defaultValue = fieldDescriptor.getDefaultValue();
@@ -233,7 +232,35 @@ export function generateFieldDefaultValue(
   if (isRepeated) {
     return "[]";
   } else if (defaultValue) {
-    return defaultValue;
+    switch (fieldDescriptor.getType()) {
+      case Type.TYPE_INT32:
+      case Type.TYPE_SINT32:
+      case Type.TYPE_FIXED32:
+      case Type.TYPE_SFIXED32:
+      case Type.TYPE_UINT32:
+      case Type.TYPE_INT64:
+      case Type.TYPE_SINT64:
+      case Type.TYPE_FIXED64:
+      case Type.TYPE_SFIXED64:
+      case Type.TYPE_UINT64:
+      case Type.TYPE_BOOL:
+      case Type.TYPE_FLOAT:
+      case Type.TYPE_DOUBLE:
+        return defaultValue;
+      case Type.TYPE_ENUM:
+        return `${generateRef(fieldDescriptor, fileContext)}.${defaultValue}`;
+      case Type.TYPE_STRING:
+        return JSON.stringify(defaultValue);
+      case Type.TYPE_BYTES:
+        // TODO: handle default value for bytes
+        return "new Uint8Array(0)";
+      case Type.TYPE_MESSAGE:
+        return "null";
+      default:
+        throw new Error(
+          `Type "${fieldDescriptor.getTypeName()}" (${fieldDescriptor.getType()}) is not supported by as-proto-gen`
+        );
+    }
   } else {
     switch (fieldDescriptor.getType()) {
       case Type.TYPE_INT32:
@@ -261,7 +288,7 @@ export function generateFieldDefaultValue(
         return "null";
       default:
         throw new Error(
-          `Type "${fieldDescriptor.getTypeName()}" is not supported by as-proto-gen`
+          `Type "${fieldDescriptor.getTypeName()}" (${fieldDescriptor.getType()}) is not supported by as-proto-gen`
         );
     }
   }
