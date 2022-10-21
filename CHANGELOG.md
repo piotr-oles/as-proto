@@ -1,3 +1,16 @@
+# v0.4.1 (Fri Oct 21 2022)
+
+#### 🐛 Bug Fix
+
+- `as-proto-gen`
+  - fix: handle default values and multiple packed fields [#24](https://github.com/piotr-oles/as-proto/pull/24) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.4.0 (Sat Aug 13 2022)
 
 #### 🚀 Enhancement
