@@ -189,7 +189,7 @@ function generateMessageConstructor(
         )}: ${generateFieldType(
           fieldDescriptor,
           fileContext
-        )} = ${generateFieldDefaultValue(fieldDescriptor)}`
+        )} = ${generateFieldDefaultValue(fieldDescriptor, fileContext)}`
     )
     .join(",\n");
   const fieldsAssignments = fields
@@ -242,7 +242,10 @@ function canMessageByUnmanaged(
   });
 }
 
-function generateHelperMethods(message: string, fileContext: FileContext): string {
+function generateHelperMethods(
+  message: string,
+  fileContext: FileContext
+): string {
   const Protobuf = fileContext.registerImport("Protobuf", "as-proto");
 
   const encodeHelper = fileContext.registerDefinition(`encode${message}`);
