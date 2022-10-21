@@ -1,3 +1,21 @@
+# v0.5.0 (Fri Oct 21 2022)
+
+#### 🚀 Enhancement
+
+- `as-proto-gen`, `as-proto`
+  - feat: upgrade assemblyscript to 0.20.x [#26](https://github.com/piotr-oles/as-proto/pull/26) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### 🐛 Bug Fix
+
+- `as-proto-gen`, `as-proto`
+  - Migrate from as-pect to end-to-end tests [#25](https://github.com/piotr-oles/as-proto/pull/25) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.4.1 (Fri Oct 21 2022)
 
 #### 🐛 Bug Fix
