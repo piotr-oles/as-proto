@@ -69,9 +69,9 @@ export function encodeTestAllTypesMessage(): Uint8Array {
   );
 }
 
-export function decodeTestAllTypesMessage(bytes: Uint8Array): boolean {
+export function decodeTestAllTypesMessage(buffer: Uint8Array): boolean {
   const message = Protobuf.decode<asproto.test.TestAllTypes>(
-    bytes,
+    buffer,
     asproto.test.TestAllTypes.decode
   );
 
