@@ -22,20 +22,20 @@ export function generateFile(
   const fileName = fileDescriptor.getName();
   assert.ok(fileName);
 
-  const types: string[] = [];
+  const messages: string[] = [];
   for (const messageDescriptor of fileDescriptor.getMessageTypeList()) {
-    types.push(
+    messages.push(
       generateMessage(messageDescriptor, fileContext, compilerOptions)
     );
   }
   for (const enumDescriptor of fileDescriptor.getEnumTypeList()) {
-    types.push(generateEnum(enumDescriptor, fileContext));
+    messages.push(generateEnum(enumDescriptor, fileContext));
   }
 
   const importsCode = fileContext.getImportsCode();
-  const typesCode = types.join("\n\n");
+  const messagesCode = messages.join("\n\n");
 
-  return [importsCode, typesCode].join("\n");
+  return [importsCode, messagesCode].join("\n");
 }
 
 export function addFile(
