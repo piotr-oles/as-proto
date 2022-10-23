@@ -19,7 +19,7 @@ export function generateHeaderComment(compilerVersion: Version | undefined) {
 }
 
 /**
- * @returns a human-readable version string based on the `Version` type
+ * @returns A human-readable version string based on the `Version` type
  * provided by the Protobuf compiler.
  */
 function versionString(version: Version): string {

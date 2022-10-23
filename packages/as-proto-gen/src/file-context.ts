@@ -106,6 +106,16 @@ export class FileContext {
     return importLines.join("\n");
   }
 
+  /**
+   * Adjusts an import statement based on the nesting level of the source file
+   * relative to the imported file.
+   *
+   * @param importRef - A namespaced identifier (e.g. `google.protobuf.Any`).
+   * @param importPath - An import path (e.g. `./google/protobuf/any`).
+   * @returns The adjusted `importRef` and `importPath`
+   * (e.g. `google.protobuf.Any` and `../../google` for a source file nested
+   * 2 levels deep).
+   */
   adjustImport(importRef: string, importPath: string): [string, string] {
     const filePath = this.fileDescriptor.getName() || "";
 
@@ -140,7 +150,7 @@ export class FileContext {
   }
 
   /**
-   * @returns the index of the first element that differs between arrays,
+   * @returns The index of the first element that differs between arrays,
    * which equals to the number of common elements at the beginning.
    */
   private commonPrefixLength<T>(array: T[], otherArray: T[]): number {
