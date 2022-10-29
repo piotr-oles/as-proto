@@ -1,10 +1,9 @@
-const {
-  TestAllTypes,
-  ForeignMessage,
-  ForeignEnum,
-} = require("./proto/testbinary_pb");
+import "./proto/testbinary_pb.cjs";
+import assert from "node:assert/strict";
 
-function createTestAllTypesMessage() {
+export function encode() {
+  const { TestAllTypes, ForeignMessage, ForeignEnum } =
+    global.proto.asproto.test;
   const BYTES = new Uint8Array(4);
   BYTES[0] = 1;
   BYTES[1] = 2;
@@ -50,7 +49,7 @@ function createTestAllTypesMessage() {
   message.setRepeatedBoolList([true]);
   message.setRepeatedStringList(["hello world"]);
   message.setRepeatedBytesList([BYTES, BYTES]);
-  subMessage = new ForeignMessage();
+  const subMessage = new ForeignMessage();
   subMessage.setC(1000);
   message.setRepeatedForeignMessageList([subMessage]);
   message.setRepeatedForeignEnumList([ForeignEnum.FOREIGN_FOO]);
@@ -71,13 +70,17 @@ function createTestAllTypesMessage() {
   // message.setPackedRepeatedBoolList([true]);
   // TODO: add support for oneof
 
-  return message;
+  return message.serializeBinary();
 }
 
-function encodeTestAllTypesMessage() {
-  return createTestAllTypesMessage().serializeBinary();
-}
+export function decode(bytes) {
+  const { TestAllTypes, ForeignMessage, ForeignEnum } =
+    global.proto.asproto.test;
 
-module.exports = {
-  encodeTestAllTypesMessage,
-};
+  const message = TestAllTypes.deserializeBinary(bytes);
+
+  assert(message.getRepeatedInt32List()[0] === -42);
+  assert(message.getRepeatedInt64List()[0] === -0x7fffffff00000000);
+
+  return true;
+}

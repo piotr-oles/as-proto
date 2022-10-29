@@ -1,2 +1,5 @@
 *.wasm
+*.wasm.map
+*.js
+*.d.ts
 proto

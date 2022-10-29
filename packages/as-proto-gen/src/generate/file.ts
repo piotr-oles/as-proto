@@ -19,7 +19,9 @@ export function generateFile(
 
   const types: string[] = [];
   for (const messageDescriptor of fileDescriptor.getMessageTypeList()) {
-    types.push(generateMessage(messageDescriptor, fileContext, compilerOptions));
+    types.push(
+      generateMessage(messageDescriptor, fileContext, compilerOptions)
+    );
   }
   for (const enumDescriptor of fileDescriptor.getEnumTypeList()) {
     types.push(generateEnum(enumDescriptor, fileContext));
@@ -43,6 +45,6 @@ export function generateFile(
   return [
     generateHeaderComment(compilerVersion),
     fileContext.getImportsCode(),
-    NamespacedTypes
+    NamespacedTypes,
   ].join("\n");
 }

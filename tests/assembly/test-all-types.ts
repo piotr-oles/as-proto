@@ -1,14 +1,14 @@
 import { asproto } from "./proto/testbinary";
 import { Protobuf } from "as-proto/assembly";
 
-function createTestAllTypesMessage(): asproto.test.TestAllTypes {
+export function encode(): Uint8Array {
   const BYTES = new Uint8Array(4);
   BYTES[0] = 1;
   BYTES[1] = 2;
   BYTES[2] = 8;
   BYTES[3] = 9;
 
-  return new asproto.test.TestAllTypes(
+  const message = new asproto.test.TestAllTypes(
     // TODO: add support for optional
     // -42,
     // -0x7fffffff00000000,
@@ -60,18 +60,15 @@ function createTestAllTypesMessage(): asproto.test.TestAllTypes {
     // [true]
     // TODO: add support for oneof
   );
-}
-
-export function encodeTestAllTypesMessage(): Uint8Array {
   return Protobuf.encode<asproto.test.TestAllTypes>(
-    createTestAllTypesMessage(),
+    message,
     asproto.test.TestAllTypes.encode
   );
 }
 
-export function decodeTestAllTypesMessage(buffer: Uint8Array): boolean {
+export function decode(bytes: Uint8Array): boolean {
   const message = Protobuf.decode<asproto.test.TestAllTypes>(
-    buffer,
+    bytes,
     asproto.test.TestAllTypes.decode
   );
 
@@ -108,5 +105,3 @@ export function decodeTestAllTypesMessage(buffer: Uint8Array): boolean {
 
   return true;
 }
-
-export const UINT8_ARRAY_ID = idof<Uint8Array>();
