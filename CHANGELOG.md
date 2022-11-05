@@ -1,3 +1,16 @@
+# v0.6.0 (Sat Nov 05 2022)
+
+#### 🚀 Enhancement
+
+- `as-proto-gen`
+  - Support map fields [#28](https://github.com/piotr-oles/as-proto/pull/28) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.5.0 (Fri Oct 21 2022)
 
 #### 🚀 Enhancement
