@@ -39,6 +39,13 @@ export function generateFieldEncodeInstruction(
     }
   };
 
+  const forkInstruction = (code: string, shouldFork = true) => {
+    if (!shouldFork) {
+      return code;
+    }
+    return [`writer.fork();`, code.trim(), `writer.ldelim();`].join("\n");
+  };
+
   if (isMessage) {
     const messageDescriptor = getFieldMessageDescriptor(
       fieldDescriptor,
@@ -63,17 +70,18 @@ export function generateFieldEncodeInstruction(
           for (let i: i32 = 0; i < ${keysVariable}.length; ++i) {
             const ${keyVariable} = ${keysVariable}[i];
             writer.uint32(${fieldTag});
-            writer.fork();
-            writer.uint32(${keyTag});
-            ${encodeInstruction(keyVariable, keyDescriptor)};
-            writer.uint32(${valueTag});
-            ${isValueMessage ? "writer.fork();" : ""}
-            ${encodeInstruction(
-              `${fieldVariable}.get(${keyVariable})`,
-              valueDescriptor
-            )};
-            ${isValueMessage ? "writer.ldelim();" : ""}
-            writer.ldelim();
+            ${forkInstruction(`
+              writer.uint32(${keyTag});
+              ${encodeInstruction(keyVariable, keyDescriptor)};
+              writer.uint32(${valueTag});
+              ${forkInstruction(
+                `${encodeInstruction(
+                  `${fieldVariable}.get(${keyVariable})`,
+                  valueDescriptor
+                )};`,
+                isValueMessage
+              )}
+            `)}
           }
         }
       `;
@@ -81,20 +89,18 @@ export function generateFieldEncodeInstruction(
       return `
         const ${fieldVariable} = message.${fieldName};
         writer.uint32(${fieldTag});
-        writer.fork();
-        for (let i: i32 = 0; i < ${fieldVariable}.length; ++i) {
-          ${encodeInstruction(`${fieldVariable}[i]`)};
-        }
-        writer.ldelim();
+        ${forkInstruction(`
+          for (let i: i32 = 0; i < ${fieldVariable}.length; ++i) {
+            ${encodeInstruction(`${fieldVariable}[i]`)};
+          }
+        `)}
       `;
     } else if (isRepeated) {
       return `
         const ${fieldVariable} = message.${fieldName};
         for (let i: i32 = 0; i < ${fieldVariable}.length; ++i) {
           writer.uint32(${fieldTag});
-          writer.fork();
-          ${encodeInstruction(`${fieldVariable}[i]`)};
-          writer.ldelim();
+          ${forkInstruction(`${encodeInstruction(`${fieldVariable}[i]`)};`)}
         }
       `;
     } else {
@@ -102,9 +108,7 @@ export function generateFieldEncodeInstruction(
         const ${fieldVariable} = message.${fieldName};
         if (${fieldVariable} !== null) {
           writer.uint32(${fieldTag});
-          writer.fork();
-          ${encodeInstruction(fieldVariable)};
-          writer.ldelim();
+          ${forkInstruction(`${encodeInstruction(fieldVariable)};`)}
         }
       `;
     }
@@ -114,11 +118,11 @@ export function generateFieldEncodeInstruction(
         const ${fieldVariable} = message.${fieldName};
         if (${fieldVariable}.length !== 0) {
           writer.uint32(${fieldTag});
-          writer.fork();
-          for (let i: i32 = 0; i < ${fieldVariable}.length; ++i) {
-            ${encodeInstruction(`${fieldVariable}[i]`)};
-          }
-          writer.ldelim();
+          ${forkInstruction(`
+            for (let i: i32 = 0; i < ${fieldVariable}.length; ++i) {
+              ${encodeInstruction(`${fieldVariable}[i]`)};
+            }
+          `)}
         }
       `;
     } else if (isRepeated) {
