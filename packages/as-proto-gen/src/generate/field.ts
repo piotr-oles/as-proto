@@ -59,7 +59,7 @@ export function generateFieldEncodeInstruction(
       return `
         const ${fieldVariable} = message.${fieldName};
         if (${fieldVariable} !== null) {
-          const ${keysVariable} = ${fieldVariable}.keys().sort();
+          const ${keysVariable} = ${fieldVariable}.keys();
           for (let i: i32 = 0; i < ${keysVariable}.length; ++i) {
             const ${keyVariable} = ${keysVariable}[i];
             writer.uint32(${fieldTag});
