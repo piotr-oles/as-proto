@@ -30,9 +30,9 @@ export class FixedWriter extends Writer {
 
   constructor() {
     super();
-    this.sizer = new FixedSizer();
-    this.buf = new Uint8Array(this.sizer.len);
-    this.ptr = this.buf.dataStart;
+    const sizer = this.sizer = new FixedSizer();
+    const buf = this.buf = new Uint8Array(sizer.len);
+    this.ptr = buf.dataStart;
     this.varlenidx = 0;
   }
 
