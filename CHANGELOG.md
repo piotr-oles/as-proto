@@ -1,3 +1,26 @@
+# v0.6.0 (Mon Nov 21 2022)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, null[@ffortier](https://github.com/ffortier), for all your work!
+
+#### 🚀 Enhancement
+
+- `as-proto-gen`
+  - Support map fields [#28](https://github.com/piotr-oles/as-proto/pull/28) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### 🐛 Bug Fix
+
+- `as-proto`
+  - fix code to compile with assemblyscript >= 0.23. [#33](https://github.com/piotr-oles/as-proto/pull/33) ([@ffortier](https://github.com/ffortier))
+
+#### Authors: 2
+
+- [@ffortier](https://github.com/ffortier)
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.5.0 (Fri Oct 21 2022)
 
 #### 🚀 Enhancement
