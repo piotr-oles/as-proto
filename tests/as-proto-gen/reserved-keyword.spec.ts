@@ -1,5 +1,8 @@
 import test from "ava";
-import { isReservedKeyword } from "../../packages/as-proto-gen/src/reserved-keywords";
+import {
+  isReservedKeyword,
+  getSafeName,
+} from "../../packages/as-proto-gen/src/reserved-keywords";
 
 test("isReservedKeyword() returns true for reserved keyword", (t) => {
   t.true(isReservedKeyword("for"));
@@ -13,4 +16,12 @@ test("isReservedKeyword() returns false for not reserved keyword", (t) => {
 test("isReservedKeyword() returns false for empty input", (t) => {
   t.false(isReservedKeyword(""));
   t.false(isReservedKeyword("  "));
+});
+
+test("getSafeName() returns original name for non-reserved keyword", (t) => {
+  t.is(getSafeName("blabla"), "blabla");
+});
+
+test("getSafeName() returns suffixed name for reserved keyword", (t) => {
+  t.is(getSafeName("for"), "for_");
 });

@@ -14,6 +14,7 @@ import { FileContext } from "../file-context";
 import { generateEnum } from "./enum";
 import * as assert from "assert";
 import { ScopeContext } from "../scope-context";
+import { getSafeName } from "../reserved-keywords";
 
 export function generateMessage(
   messageDescriptor: DescriptorProto,
@@ -179,12 +180,11 @@ function generateMessageConstructor(
   fileContext: FileContext
 ): string {
   const fields = messageDescriptor.getFieldList();
-  const scopeContext = new ScopeContext(fileContext);
 
   const constructorParams = fields
     .map(
       (fieldDescriptor) =>
-        `${scopeContext.getSafeName(
+        `${getSafeName(
           generateFieldName(fieldDescriptor)
         )}: ${generateFieldType(
           fieldDescriptor,
@@ -195,9 +195,9 @@ function generateMessageConstructor(
   const fieldsAssignments = fields
     .map(
       (fieldDescriptor) =>
-        `this.${generateFieldName(
-          fieldDescriptor
-        )} = ${scopeContext.getSafeName(generateFieldName(fieldDescriptor))}`
+        `this.${generateFieldName(fieldDescriptor)} = ${getSafeName(
+          generateFieldName(fieldDescriptor)
+        )}`
     )
     .join(";\n");
 

@@ -40,3 +40,10 @@ export const RESERVED_KEYWORDS: Set<string> = new Set([
 export function isReservedKeyword(word: string): boolean {
   return RESERVED_KEYWORDS.has(word);
 }
+
+/**
+ * Suffixes name if it's a reserved keyword
+ */
+export function getSafeName(name: string): string {
+  return isReservedKeyword(name) ? `${name}_` : name;
+}
