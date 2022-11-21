@@ -1,3 +1,19 @@
+# v0.6.0 (Mon Nov 21 2022)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, null[@ffortier](https://github.com/ffortier), for all your work!
+
+#### 🐛 Bug Fix
+
+- fix code to compile with assemblyscript >= 0.23. [#33](https://github.com/piotr-oles/as-proto/pull/33) ([@ffortier](https://github.com/ffortier))
+
+#### Authors: 1
+
+- [@ffortier](https://github.com/ffortier)
+
+---
+
 # v0.5.0 (Fri Oct 21 2022)
 
 #### 🚀 Enhancement
