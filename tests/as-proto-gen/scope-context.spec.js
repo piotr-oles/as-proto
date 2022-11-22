@@ -1,8 +1,7 @@
 import test from "ava";
-import { ScopeContext } from "../../packages/as-proto-gen/src/scope-context";
-import { FileContext } from "../../packages/as-proto-gen/src/file-context";
+import { ScopeContext } from "as-proto-gen/lib/scope-context.js";
 
-const fileContext: FileContext = {} as FileContext;
+const fileContext = {};
 
 test("ScopeContext.getFileContext() returns file context passed to constructor", (t) => {
   const scopeContext = new ScopeContext(fileContext);
