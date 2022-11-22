@@ -23,6 +23,15 @@ export class ScopeContext {
     while (this.registeredNames.has(freeName)) {
       freeName = `${preferredName}_${freeSuffix++}`;
     }
+    this.registeredNames.add(freeName);
+
     return freeName;
+  }
+
+  /**
+   * Checks if given name is registered in a scope.
+   */
+  hasRegisteredName(name: string): boolean {
+    return this.registeredNames.has(name);
   }
 }
