@@ -10,6 +10,9 @@ export class ScopeContext {
     this.registeredNames = new Set(reservedNames);
   }
 
+  /**
+   * Return file context in which the scope is.
+   */
   getFileContext(): FileContext {
     return this.fileContext;
   }
