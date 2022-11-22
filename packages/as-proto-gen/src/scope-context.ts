@@ -15,9 +15,9 @@ export class ScopeContext {
   }
 
   /**
-   * Returns a name that is not already reserved.
+   * Registers a new name in a scope.
    */
-  getFreeName(preferredName: string): string {
+  registerName(preferredName: string): string {
     let freeName = getSafeName(preferredName);
     let freeSuffix = 2;
     while (this.registeredNames.has(freeName)) {
