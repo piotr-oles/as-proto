@@ -36,3 +36,17 @@ test("ScopeContext.registerName() returns suffixed name for reserved keyword in 
 
   t.is(scopeContext.registerName("if"), "if_3");
 });
+
+test("ScopeContext.hasRegisteredName() returns if a name is already registered", (t) => {
+  const scopeContext = new ScopeContext(fileContext, ["blabla"]);
+
+  t.is(scopeContext.hasRegisteredName("blabla"), true);
+  t.is(scopeContext.hasRegisteredName("test"), false);
+
+  scopeContext.registerName("test");
+  t.is(scopeContext.hasRegisteredName("test"), true);
+
+  scopeContext.registerName("test");
+  t.is(scopeContext.hasRegisteredName("test"), true);
+  t.is(scopeContext.hasRegisteredName("test_2"), true);
+});
