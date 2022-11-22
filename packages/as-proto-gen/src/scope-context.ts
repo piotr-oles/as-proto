@@ -3,11 +3,11 @@ import { getSafeName } from "./reserved-keywords";
 
 export class ScopeContext {
   private readonly fileContext: FileContext;
-  private readonly reservedNames: Set<string>;
+  private readonly registeredNames: Set<string>;
 
   constructor(fileContext: FileContext, reservedNames: string[] = []) {
     this.fileContext = fileContext;
-    this.reservedNames = new Set(reservedNames);
+    this.registeredNames = new Set(reservedNames);
   }
 
   getFileContext(): FileContext {
@@ -20,7 +20,7 @@ export class ScopeContext {
   getFreeName(preferredName: string): string {
     let freeName = getSafeName(preferredName);
     let freeSuffix = 2;
-    while (this.reservedNames.has(freeName)) {
+    while (this.registeredNames.has(freeName)) {
       freeName = `${preferredName}_${freeSuffix++}`;
     }
     return freeName;
