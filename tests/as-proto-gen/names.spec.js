@@ -4,7 +4,7 @@ import {
   getPathWithoutProto,
   ensureRelativeImportDot,
   getTypeName,
-} from "../../packages/as-proto-gen/src/names";
+} from "as-proto-gen/lib/names.js";
 
 test("getPathWithoutProto() returns file name without .proto suffix", (t) => {
   t.is(getPathWithoutProto("./test.proto"), "./test");

@@ -2,7 +2,7 @@ import test from "ava";
 import {
   isReservedKeyword,
   getSafeName,
-} from "../../packages/as-proto-gen/src/reserved-keywords";
+} from "as-proto-gen/lib/reserved-keywords.js";
 
 test("isReservedKeyword() returns true for reserved keyword", (t) => {
   t.true(isReservedKeyword("for"));
