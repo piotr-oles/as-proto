@@ -22,7 +22,7 @@ export function generateFieldEncodeInstruction(
 
   const fieldTag = getFieldTag(fieldDescriptor);
   const fieldName = generateFieldName(fieldDescriptor);
-  const fieldVariable = scopeContext.getFreeName(fieldName);
+  const fieldVariable = scopeContext.registerName(fieldName);
 
   const encodeInstruction = (
     variable: string,
@@ -55,8 +55,8 @@ export function generateFieldEncodeInstruction(
     const isMap = isMapMessageDescriptor(messageDescriptor);
 
     if (isMap) {
-      const keysVariable = scopeContext.getFreeName(fieldName + "Keys");
-      const keyVariable = scopeContext.getFreeName(fieldName + "Key");
+      const keysVariable = scopeContext.registerName(fieldName + "Keys");
+      const keyVariable = scopeContext.registerName(fieldName + "Key");
       const [keyDescriptor, valueDescriptor] =
         getMapKeyAndValueFieldDescriptors(messageDescriptor);
       const keyTag = getFieldTag(keyDescriptor);
@@ -205,11 +205,13 @@ export function generateFieldDecodeInstruction(
         valueDescriptor,
         scopeContext.getFileContext()
       );
-      const fieldVariable = scopeContext.getFreeName(fieldName);
-      const keyVariable = scopeContext.getFreeName(fieldName + "Key");
-      const hasKeyVariable = scopeContext.getFreeName(fieldName + "HasKey");
-      const valueVariable = scopeContext.getFreeName(fieldName + "Value");
-      const hasValueVariable = scopeContext.getFreeName(fieldName + "HasValue");
+      const fieldVariable = scopeContext.registerName(fieldName);
+      const keyVariable = scopeContext.registerName(fieldName + "Key");
+      const hasKeyVariable = scopeContext.registerName(fieldName + "HasKey");
+      const valueVariable = scopeContext.registerName(fieldName + "Value");
+      const hasValueVariable = scopeContext.registerName(
+        fieldName + "HasValue"
+      );
       const keyNumber = keyDescriptor.getNumber();
       const valueNumber = valueDescriptor.getNumber();
       const keyDefaultValue = generateFieldBasicDefaultValue(keyDescriptor);
