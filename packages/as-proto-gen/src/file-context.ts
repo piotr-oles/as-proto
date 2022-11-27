@@ -1,13 +1,15 @@
 import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
 import { GeneratorContext } from "./generator-context";
+import { ScopeContext } from "./scope-context";
+import * as assert from "assert";
 
 export class FileContext {
+  private readonly moduleScopeContext: ScopeContext;
   private readonly generatorContext: GeneratorContext;
   private readonly fileDescriptor: FileDescriptorProto;
   private readonly registeredImports: Map<string, Map<string, string>> =
     new Map();
   private readonly registeredDefinitions: Set<string> = new Set();
-  private readonly importNames: Set<string> = new Set();
 
   constructor(
     generatorContext: GeneratorContext,
@@ -15,6 +17,7 @@ export class FileContext {
   ) {
     this.generatorContext = generatorContext;
     this.fileDescriptor = fileDescriptor;
+    this.moduleScopeContext = new ScopeContext(this);
   }
 
   getGeneratorContext(): GeneratorContext {
@@ -35,35 +38,27 @@ export class FileContext {
     }
     const importNames =
       this.registeredImports.get(importPath) || new Map<string, string>();
-    const uniqueImportName =
-      importNames.get(importName) || this.getUniqueName(importName);
+    const safeImportName =
+      importNames.get(importName) ||
+      this.moduleScopeContext.registerName(importName);
 
-    importNames.set(importName, uniqueImportName);
+    importNames.set(importName, safeImportName);
     this.registeredImports.set(importPath, importNames);
 
-    return [uniqueImportName, ...importNamespace].join(".");
+    return [safeImportName, ...importNamespace].join(".");
   }
 
   registerDefinition(definitionNamePath: string): string {
     const [definitionName] = definitionNamePath.split(".");
 
     if (!this.registeredDefinitions.has(definitionName)) {
-      if (this.importNames.has(definitionName)) {
-        // update import to prevent name collision
-        const nextUniqueImportName = this.getUniqueName(definitionName);
-        for (const [importPath, importNames] of this.registeredImports) {
-          for (const [importName, uniqueImportName] of importNames) {
-            if (uniqueImportName === definitionName) {
-              importNames.set(importName, nextUniqueImportName);
-            }
-          }
-        }
-      }
+      // we assume that definitions are registered before imports
+      assert.ok(!this.moduleScopeContext.hasRegisteredName(definitionName));
 
       this.registeredDefinitions.add(definitionName);
+      // reserve this name
+      this.moduleScopeContext.registerName(definitionName);
     }
-    // reserve this name
-    this.importNames.add(definitionName);
 
     return definitionNamePath;
   }
@@ -72,10 +67,10 @@ export class FileContext {
     let importLines: string[] = [];
     for (const [importPath, importNames] of this.registeredImports) {
       const importFields: string[] = [];
-      for (const [importName, uniqueImportName] of importNames) {
-        const isAliased = importName !== uniqueImportName;
+      for (const [importName, safeImportName] of importNames) {
+        const isAliased = importName !== safeImportName;
         importFields.push(
-          isAliased ? `${importName} as ${uniqueImportName}` : `${importName}`
+          isAliased ? `${importName} as ${safeImportName}` : `${importName}`
         );
       }
       importLines.push(
@@ -86,14 +81,5 @@ export class FileContext {
     }
 
     return importLines.join("\n");
-  }
-
-  private getUniqueName(importName: string): string {
-    let uniqueImportName = importName;
-    let uniqueSuffix = 2;
-    while (this.importNames.has(uniqueImportName)) {
-      uniqueImportName = `${importName}_${uniqueSuffix++}`;
-    }
-    return uniqueImportName;
   }
 }
