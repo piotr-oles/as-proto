@@ -1,3 +1,20 @@
+# v0.9.1 (Sun Nov 27 2022)
+
+#### 🐛 Bug Fix
+
+- Improve file context by re-using scope context [#37](https://github.com/piotr-oles/as-proto/pull/37) ([@piotr-oles](https://github.com/piotr-oles))
+- Add comments to `getFileContext()` function [#35](https://github.com/piotr-oles/as-proto/pull/35) ([@piotr-oles](https://github.com/piotr-oles))
+- Add `freeName` to `registeredNames` on `registerName()` call [#35](https://github.com/piotr-oles/as-proto/pull/35) ([@piotr-oles](https://github.com/piotr-oles))
+- Rename `getFreeName` to `registerName` in `ScopeContext` [#35](https://github.com/piotr-oles/as-proto/pull/35) ([@piotr-oles](https://github.com/piotr-oles))
+- Rename `reservedNames` to `registeredNames` in `ScopeContext` [#35](https://github.com/piotr-oles/as-proto/pull/35) ([@piotr-oles](https://github.com/piotr-oles))
+- Remove `getSafeName()` from `ScopeContext` [#34](https://github.com/piotr-oles/as-proto/pull/34) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.6.0 (Mon Nov 21 2022)
 
 #### 🚀 Enhancement
