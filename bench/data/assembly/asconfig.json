@@ -1,0 +1,12 @@
+{
+  "options": {
+    "sourceMap": true,
+    "optimizeLevel": 3,
+    "shrinkLevel": 0,
+    "runtime": "incremental",
+    "converge": true,
+    "noAssert": true,
+    "bindings": "esm"
+  }
+}
+

@@ -12,14 +12,13 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run build",
+    "release": "auto shipit",
     "test:prepare": "node tests/prepare.js",
     "test:run": "ava",
     "test": "yarn test:prepare && yarn test:run",
-    "release": "auto shipit",
-    "bench:generate": "cd bench/data && protoc --plugin='protoc-gen-as=../../packages/as-proto-gen/bin/as-proto-gen' --as_out='../as-proto/assembly/generated' ./bench.proto && cd ../../",
-    "bench:build": "cd bench/as-proto && asc assembly/static_aspr.ts --target=release && tsc && cd ../../",
-    "bench:prepare": "yarn bench:generate && yarn bench:build",
-    "bench": "yarn bench:prepare && node bench"
+    "bench:prepare": "node bench/prepare.js",
+    "bench:run": "node bench/index.cjs",
+    "bench": "yarn bench:prepare && yarn bench:run"
   },
   "devDependencies": {
     "@assemblyscript/loader": "^0.24.1",
