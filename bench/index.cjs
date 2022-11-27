@@ -11,24 +11,14 @@
 const newSuite = require("./suite.cjs");
 const payload = require("./data/bench.json");
 
-const Buffer_from =
-  (Buffer.from !== Uint8Array.from && Buffer.from) || ((value, encoding) => new Buffer(value, encoding));
-
-// protobuf.js dynamic: load the proto and set up a buffer
-const pbjsCls = require("protobufjs")
-  .loadSync(require.resolve("./data/bench.proto"))
-  .resolveAll()
-  .lookup("Test");
-const pbjsMsg = payload; // alt: pbjsCls.fromObject(payload);
-const pbjsBuf = pbjsCls.encode(pbjsMsg).finish();
-
 // protobuf.js static: load the proto
-const pbjsStaticCls = require("./data/static_pbjs.cjs").Test;
+const pbjsCls = require("./data/static_pbjs.cjs").Test;
+const pbjsMsg = payload;
+const pbjsBuf = pbjsCls.encode(pbjsMsg).finish();
 
 // JSON: set up a string and a buffer
 const jsonMsg = payload;
 const jsonStr = JSON.stringify(jsonMsg);
-const jsonBuf = Buffer_from(jsonStr, "utf8");
 
 // google-protobuf: load the proto, set up an Uint8Array and a message
 const jspbCls = require("./data/static_jspb.cjs").Test;
@@ -40,17 +30,11 @@ import("./data/static_aspr.js").then(asprMod => [
       .add("as-proto", () => {
           asprMod.encode();
       })
-      .add("protobuf.js (reflect)", () => {
+      .add("protobuf.js", () => {
           pbjsCls.encode(pbjsMsg).finish();
       })
-      .add("protobuf.js (static)", () => {
-          pbjsStaticCls.encode(pbjsMsg).finish();
-      })
-      .add("JSON (string)", () => {
+      .add("JSON", () => {
           JSON.stringify(jsonMsg);
-      })
-      .add("JSON (buffer)", () => {
-          Buffer_from(JSON.stringify(jsonMsg), "utf8");
       })
       .add("google-protobuf", () => {
           jspbMsg.serializeBinary();
@@ -59,17 +43,11 @@ import("./data/static_aspr.js").then(asprMod => [
       .add("as-proto", () => {
           asprMod.decode();
       })
-      .add("protobuf.js (reflect)", () => {
-          pbjsCls.decode(pbjsBuf); // no allocation overhead, if you wondered
+      .add("protobuf.js", () => {
+          pbjsCls.decode(pbjsBuf);
       })
-      .add("protobuf.js (static)", () => {
-          pbjsStaticCls.decode(pbjsBuf);
-      })
-      .add("JSON (string)", () => {
+      .add("JSON", () => {
           JSON.parse(jsonStr);
-      })
-      .add("JSON (buffer)", () => {
-          JSON.parse(jsonBuf.toString("utf8"));
       })
       .add("google-protobuf", () => {
           jspbCls.deserializeBinary(jspbBuf);
@@ -78,17 +56,11 @@ import("./data/static_aspr.js").then(asprMod => [
       .add("as-proto", () => {
           asprMod.encodeDecode();
       })
-      .add("protobuf.js (reflect)", () => {
+      .add("protobuf.js", () => {
           pbjsCls.decode(pbjsCls.encode(pbjsMsg).finish());
       })
-      .add("protobuf.js (static)", () => {
-          pbjsStaticCls.decode(pbjsStaticCls.encode(pbjsMsg).finish());
-      })
-      .add("JSON (string)", () => {
+      .add("JSON", () => {
           JSON.parse(JSON.stringify(jsonMsg));
-      })
-      .add("JSON (buffer)", () => {
-          JSON.parse(Buffer_from(JSON.stringify(jsonMsg), "utf8").toString("utf8"));
       })
       .add("google-protobuf", () => {
           jspbCls.deserializeBinary(jspbMsg.serializeBinary());
