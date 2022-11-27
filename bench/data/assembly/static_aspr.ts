@@ -1,4 +1,4 @@
-import { Test, Outer } from "./generated/bench";
+import { Test, Outer } from "./bench";
 import { Protobuf } from "as-proto/assembly";
 
 const testDecoded = new Test(

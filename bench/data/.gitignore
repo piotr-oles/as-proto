@@ -1,3 +1,4 @@
 static_aspr.wasm
 static_aspr.wasm.map
-static_aspr.wat
+static_aspr.js
+static_aspr.d.ts
