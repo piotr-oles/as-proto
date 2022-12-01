@@ -4,7 +4,7 @@ import {
 } from "google-protobuf/google/protobuf/compiler/plugin_pb";
 import { GeneratorContext } from "./generator-context";
 import { generateFile } from "./generate/file";
-import { getPathWithoutProto } from "./names";
+import { getPathWithoutExtension } from "./names";
 import { FileContext } from "./file-context";
 import prettier from "prettier";
 import * as fs from "fs-extra";
@@ -62,7 +62,7 @@ fs.readFile(process.stdin.fd, (error, input) => {
       }
 
       const outputFile = new CodeGeneratorResponse.File();
-      outputFile.setName(getPathWithoutProto(fileName) + ".ts");
+      outputFile.setName(getPathWithoutExtension(fileName, ".proto") + ".ts");
       outputFile.setContent(formattedCode);
       codeGenResponse.addFile(outputFile);
     }
