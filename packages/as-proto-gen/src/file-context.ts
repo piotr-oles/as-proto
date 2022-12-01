@@ -1,22 +1,24 @@
-import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
 import { GeneratorContext } from "./generator-context";
+import { getPathWithoutExtension } from "./names";
 import { ScopeContext } from "./scope-context";
 import * as assert from "assert";
 
 export class FileContext {
+  private readonly filePath: string;
   private readonly moduleScopeContext: ScopeContext;
   private readonly generatorContext: GeneratorContext;
-  private readonly fileDescriptor: FileDescriptorProto;
   private readonly registeredImports: Map<string, Map<string, string>> =
     new Map();
   private readonly registeredDefinitions: Set<string> = new Set();
 
-  constructor(
-    generatorContext: GeneratorContext,
-    fileDescriptor: FileDescriptorProto
-  ) {
+  constructor(filePath: string, generatorContext: GeneratorContext) {
+    this.filePath = filePath;
     this.generatorContext = generatorContext;
-    this.fileDescriptor = fileDescriptor;
+    this.moduleScopeContext = new ScopeContext(this);
+  }
+
+  getFilePath(): string {
+    return this.filePath;
     this.moduleScopeContext = new ScopeContext(this);
   }
 
@@ -24,33 +26,24 @@ export class FileContext {
     return this.generatorContext;
   }
 
-  getFileDescriptor(): FileDescriptorProto {
-    return this.fileDescriptor;
-  }
+  registerImport(importName: string, importPath: string): string {
+    const normalizedImportPath = getPathWithoutExtension(importPath, ".ts");
+    assert.ok(importName !== "");
 
-  registerImport(importNamePath: string, importPath: string): string {
-    const [importName, ...importNamespace] = importNamePath.split(".");
-
-    if (!importName) {
-      throw new Error(
-        `Cannot register empty import of ${importNamePath} from ${importPath}.`
-      );
-    }
     const importNames =
-      this.registeredImports.get(importPath) || new Map<string, string>();
+      this.registeredImports.get(normalizedImportPath) ||
+      new Map<string, string>();
     const safeImportName =
       importNames.get(importName) ||
       this.moduleScopeContext.registerName(importName);
 
     importNames.set(importName, safeImportName);
-    this.registeredImports.set(importPath, importNames);
+    this.registeredImports.set(normalizedImportPath, importNames);
 
-    return [safeImportName, ...importNamespace].join(".");
+    return safeImportName;
   }
 
-  registerDefinition(definitionNamePath: string): string {
-    const [definitionName] = definitionNamePath.split(".");
-
+  registerDefinition(definitionName: string): string {
     if (!this.registeredDefinitions.has(definitionName)) {
       // we assume that definitions are registered before imports
       assert.ok(!this.moduleScopeContext.hasRegisteredName(definitionName));
@@ -60,7 +53,7 @@ export class FileContext {
       this.moduleScopeContext.registerName(definitionName);
     }
 
-    return definitionNamePath;
+    return definitionName;
   }
 
   getImportsCode(): string {

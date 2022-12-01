@@ -11,7 +11,6 @@ import {
   isManagedFieldType,
 } from "./field";
 import { FileContext } from "../file-context";
-import { generateEnum } from "./enum";
 import * as assert from "assert";
 import { ScopeContext } from "../scope-context";
 import { getSafeName } from "../reserved-keywords";
@@ -19,15 +18,10 @@ import { getSafeName } from "../reserved-keywords";
 export function generateMessage(
   messageDescriptor: DescriptorProto,
   fileContext: FileContext,
-  compilerOptions: Set<string>,
-  messageNamespace?: string
+  compilerOptions: Set<string>
 ): string {
   const messageName = messageDescriptor.getName();
   assert.ok(messageName);
-
-  const messageNameWithNamespace = messageNamespace
-    ? `${messageNamespace}.${messageName}`
-    : messageName;
 
   const messageOptions = messageDescriptor.getOptions();
 
@@ -56,36 +50,11 @@ export function generateMessage(
     }
   `;
 
-  const nested: string[] = [];
-  for (const nestedMessageDescriptor of messageDescriptor.getNestedTypeList()) {
-    nested.push(
-      generateMessage(
-        nestedMessageDescriptor,
-        fileContext,
-        compilerOptions,
-        messageNameWithNamespace
-      )
-    );
-  }
-  for (const nestedEnumDescriptor of messageDescriptor.getEnumTypeList()) {
-    nested.push(generateEnum(nestedEnumDescriptor, fileContext));
-  }
-
-  const MessageNamespace = nested.length
-    ? `
-      export namespace ${Message} {
-        ${nested.join("\n\n")}
-      }
-    `
-    : "";
-
   const parts = [MessageClass];
 
   if (compilerOptions.has("gen-helper-methods")) {
     parts.push(generateHelperMethods(Message, fileContext));
   }
-
-  parts.push(MessageNamespace);
 
   return parts.join("\n");
 }

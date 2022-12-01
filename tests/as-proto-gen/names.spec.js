@@ -3,7 +3,6 @@ import {
   getFieldTypeName,
   getPathWithoutExtension,
   ensureRelativeImportDot,
-  getTypeName,
 } from "as-proto-gen/lib/names.js";
 
 test("getPathWithoutExtension() returns file name without .proto suffix", (t) => {
@@ -25,24 +24,6 @@ test("getFieldTypeName() returns valid field type name for package and type", (t
 
 test("getFieldTypeName() returns empty string for empty input", (t) => {
   t.is(getFieldTypeName("", ""), "");
-});
-
-test("getTypeName() returns valid type name for field type name", (t) => {
-  t.is(
-    getTypeName(".some.file.package.Some.Type"),
-    "some.file.package.Some.Type"
-  );
-  t.is(getTypeName(".Some.Type"), "Some.Type");
-  t.is(getTypeName(".some.file.package"), "some.file.package");
-  t.is(
-    getTypeName("some.file.package.Some.Type"),
-    "some.file.package.Some.Type"
-  );
-});
-
-test("getTypeName() returns empty string for empty input", (t) => {
-  t.is(getTypeName(""), "");
-  t.is(getTypeName("."), "");
 });
 
 test("ensureRelativeImportDot() adds dot for relative imports", (t) => {

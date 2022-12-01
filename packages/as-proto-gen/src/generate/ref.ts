@@ -1,11 +1,9 @@
-import {
-  getPathWithoutExtension,
-  ensureRelativeImportDot,
-  getTypeName,
-} from "../names";
+import { ensureRelativeImportDot } from "../names";
 import { FileContext } from "../file-context";
 import * as assert from "assert";
+import * as path from "path";
 import { FieldDescriptorProto } from "google-protobuf/google/protobuf/descriptor_pb";
+import { getOutputFilePath } from "./file";
 
 export function generateRef(
   fieldDescriptor: FieldDescriptorProto,
@@ -15,26 +13,37 @@ export function generateRef(
     fieldDescriptor.getType() === FieldDescriptorProto.Type.TYPE_MESSAGE ||
       fieldDescriptor.getType() === FieldDescriptorProto.Type.TYPE_ENUM
   );
-  const fieldTypeName = fieldDescriptor.getTypeName();
-  assert.ok(fieldTypeName !== undefined);
+  const generatorContext = fileContext.getGeneratorContext();
 
-  const fileDescriptor = fileContext
-    .getGeneratorContext()
-    .getFileDescriptorByFieldTypeName(fieldTypeName);
+  const fileDescriptor =
+    generatorContext.getFileDescriptorByFieldDescriptor(fieldDescriptor);
   assert.ok(fileDescriptor !== undefined);
 
-  const isSameFile = fileContext.getFileDescriptor() === fileDescriptor;
-  const typeName = getTypeName(fieldTypeName);
+  const messageOrEnumDescriptor =
+    generatorContext.getMessageOrEnumByFieldDescriptor(fieldDescriptor);
+  assert.ok(messageOrEnumDescriptor !== undefined);
 
-  if (isSameFile) {
-    return fileContext.registerDefinition(typeName);
-  } else {
-    const fileName = fileDescriptor.getName();
-    assert.ok(fileName);
-
-    return fileContext.registerImport(
-      typeName,
-      ensureRelativeImportDot(getPathWithoutExtension(fileName, ".proto"))
+  const parentMessageDescriptors =
+    generatorContext.getParentMessageDescriptorsByFieldDescriptor(
+      fieldDescriptor
     );
-  }
+  assert.ok(parentMessageDescriptors !== undefined);
+
+  const messageOrEnumFilePath = getOutputFilePath(
+    fileDescriptor,
+    messageOrEnumDescriptor,
+    parentMessageDescriptors
+  );
+  const relativeMessageOrEnumFilePath = path.relative(
+    path.dirname(fileContext.getFilePath()),
+    messageOrEnumFilePath
+  );
+
+  const messageOrEnumName = messageOrEnumDescriptor.getName();
+  assert.ok(messageOrEnumName !== undefined);
+
+  return fileContext.registerImport(
+    messageOrEnumName,
+    ensureRelativeImportDot(relativeMessageOrEnumFilePath)
+  );
 }

@@ -1,3 +1,9 @@
+import {
+  DescriptorProto,
+  EnumDescriptorProto,
+} from "google-protobuf/google/protobuf/descriptor_pb";
+import * as assert from "assert";
+
 /**
  * Removes extension suffix from the file path
  * @param filePath File path to remove extension from
@@ -11,6 +17,21 @@ export function getPathWithoutExtension(
   return filePath.endsWith(extension)
     ? filePath.slice(0, -extension.length)
     : filePath;
+
+/**
+ * Get namespaced type name from descriptors.
+ */
+export function getNamespacedTypeName(
+  messageOrEnumDescriptor: DescriptorProto | EnumDescriptorProto,
+  parentMessageDescriptors: DescriptorProto[]
+) {
+  assert.ok(messageOrEnumDescriptor.getName() !== undefined);
+  return [
+    ...parentMessageDescriptors.map((parentMessageDescriptor) =>
+      parentMessageDescriptor.getName()
+    ),
+    messageOrEnumDescriptor.getName(),
+  ].join(".");
 }
 
 /**
@@ -22,19 +43,14 @@ export function getFieldTypeName(
 ): string {
   let fieldTypeName = "";
   if (filePackage) {
-    fieldTypeName += "." + filePackage;
+    fieldTypeName += filePackage.startsWith(".")
+      ? filePackage
+      : "." + filePackage;
   }
   if (typeName) {
-    fieldTypeName += "." + typeName;
+    fieldTypeName += typeName.startsWith(".") ? typeName : "." + typeName;
   }
   return fieldTypeName;
-}
-
-/**
- * Extracts type name from a "field type name" (protobuf representation which starts with .)
- */
-export function getTypeName(fieldTypeName: string): string {
-  return fieldTypeName.startsWith(".") ? fieldTypeName.slice(1) : fieldTypeName;
 }
 
 /**

@@ -2,4 +2,4 @@
 *.wasm.map
 *.js
 *.d.ts
-proto
+asproto
