@@ -597,10 +597,10 @@ function getFieldMessageDescriptor(
   generatorContext: GeneratorContext
 ): DescriptorProto | undefined {
   assert.ok(fieldDescriptor.getType() === Type.TYPE_MESSAGE);
+  const fieldTypeName = fieldDescriptor.getTypeName();
+  assert.ok(fieldTypeName !== undefined);
 
-  return generatorContext.getMessageDescriptorByFieldTypeName(
-    fieldDescriptor.getTypeName() || ""
-  );
+  return generatorContext.getMessageDescriptorByFieldTypeName(fieldTypeName);
 }
 
 function isMapMessageDescriptor(messageDescriptor: DescriptorProto): boolean {
