@@ -1,11 +1,16 @@
 /**
- * Removes .proto suffix from the file name
+ * Removes extension suffix from the file path
+ * @param filePath File path to remove extension from
+ * @param extension Extension to remove
+ * @returns File path without extension
  */
-export function getPathWithoutProto(fileName: string): string {
-  const extension = ".proto";
-  return fileName.endsWith(extension)
-    ? fileName.slice(0, -extension.length)
-    : fileName;
+export function getPathWithoutExtension(
+  filePath: string,
+  extension: string
+): string {
+  return filePath.endsWith(extension)
+    ? filePath.slice(0, -extension.length)
+    : filePath;
 }
 
 /**
@@ -36,5 +41,7 @@ export function getTypeName(fieldTypeName: string): string {
  * Ensures that relative import has dot at the beginning.
  */
 export function ensureRelativeImportDot(importName: string): string {
-  return importName.startsWith(".") || importName.startsWith("/") ? importName : `./${importName}`;
+  return importName.startsWith(".") || importName.startsWith("/")
+    ? importName
+    : `./${importName}`;
 }

@@ -1,5 +1,5 @@
 import {
-  getPathWithoutProto,
+  getPathWithoutExtension,
   ensureRelativeImportDot,
   getTypeName,
 } from "../names";
@@ -34,7 +34,7 @@ export function generateRef(
 
     return fileContext.registerImport(
       typeName,
-      ensureRelativeImportDot(getPathWithoutProto(fileName))
+      ensureRelativeImportDot(getPathWithoutExtension(fileName, ".proto"))
     );
   }
 }

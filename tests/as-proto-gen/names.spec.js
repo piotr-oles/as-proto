@@ -1,16 +1,17 @@
 import test from "ava";
 import {
   getFieldTypeName,
-  getPathWithoutProto,
+  getPathWithoutExtension,
   ensureRelativeImportDot,
   getTypeName,
 } from "as-proto-gen/lib/names.js";
 
-test("getPathWithoutProto() returns file name without .proto suffix", (t) => {
-  t.is(getPathWithoutProto("./test.proto"), "./test");
-  t.is(getPathWithoutProto("./test.ts"), "./test.ts");
-  t.is(getPathWithoutProto("./test"), "./test");
-  t.is(getPathWithoutProto(""), "");
+test("getPathWithoutExtension() returns file name without .proto suffix", (t) => {
+  t.is(getPathWithoutExtension("./test.proto", ".proto"), "./test");
+  t.is(getPathWithoutExtension("./test.ts", ".proto"), "./test.ts");
+  t.is(getPathWithoutExtension("./test.ts", ".ts"), "./test");
+  t.is(getPathWithoutExtension("./test", ".ts"), "./test");
+  t.is(getPathWithoutExtension("", ".jpeg"), "");
 });
 
 test("getFieldTypeName() returns valid field type name for package and type", (t) => {
