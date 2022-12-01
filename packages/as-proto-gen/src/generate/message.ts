@@ -38,6 +38,11 @@ export function generateMessage(
   }
 
   const Message = fileContext.registerDefinition(messageName);
+  if (compilerOptions.has("gen-helper-methods")) {
+    // reserve these names
+    fileContext.registerDefinition(`encode${Message}`);
+    fileContext.registerDefinition(`decode${Message}`);
+  }
 
   const MessageClass = `
     ${canMessageByUnmanaged(messageDescriptor, fileContext) ? "@unmanaged" : ""}
@@ -243,21 +248,21 @@ function canMessageByUnmanaged(
 }
 
 function generateHelperMethods(
-  message: string,
+  Message: string,
   fileContext: FileContext
 ): string {
   const Protobuf = fileContext.registerImport("Protobuf", "as-proto/assembly");
 
-  const encodeHelper = fileContext.registerDefinition(`encode${message}`);
-  const decodeHelper = fileContext.registerDefinition(`decode${message}`);
+  const encodeHelper = fileContext.registerDefinition(`encode${Message}`);
+  const decodeHelper = fileContext.registerDefinition(`decode${Message}`);
 
   return `
-    export function ${encodeHelper}(message: ${message}): Uint8Array {
-      return ${Protobuf}.encode(message, ${message}.encode);
+    export function ${encodeHelper}(message: ${Message}): Uint8Array {
+      return ${Protobuf}.encode(message, ${Message}.encode);
     }
 
-    export function ${decodeHelper}(buffer: Uint8Array): ${message} {
-      return ${Protobuf}.decode<${message}>(buffer, ${message}.decode);
+    export function ${decodeHelper}(buffer: Uint8Array): ${Message} {
+      return ${Protobuf}.decode<${Message}>(buffer, ${Message}.decode);
     }
   `;
 }
