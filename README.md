@@ -159,6 +159,16 @@ const decoded = decodeStarRepoMessage(encoded);
 
 Currently the package doesn't support GRPC definitions - only basic Protobuf messages.
 
+## Using Google Library Types
+
+If your `.proto` definition imports type from `google/protobuf/*`, those types will be referenced and also generated in the AssemblyScript, but only if you pass them explicitly to `protoc`. The `.proto` source files for the `google/protobuf` types will automatically be on the search path for `protoc` - you do not have to find and copy them into your source tree. For example:
+
+```sh
+protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./file.proto google/protobuf/timestamp.proto
+```
+
+will generate `file.as` and `google/protobuf/timestamp.as`.
+
 ## Performance
 I used performance benchmark from [`ts-proto`][3] library and added case for `as-proto`.
 The results on Intel Core i7 2.2 Ghz (MacBook Pro 2015):
