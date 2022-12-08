@@ -1,3 +1,17 @@
+# v0.9.2 (Thu Dec 08 2022)
+
+#### 🐛 Bug Fix
+
+- fix: improve safety when generating helper methods code [#41](https://github.com/piotr-oles/as-proto/pull/41) ([@piotr-oles](https://github.com/piotr-oles))
+- fix: improve safety when generating field code [#40](https://github.com/piotr-oles/as-proto/pull/40) ([@piotr-oles](https://github.com/piotr-oles))
+- refactor: generalise `getPathWithoutProto` to `getPathWithoutExtension` [#39](https://github.com/piotr-oles/as-proto/pull/39) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.9.1 (Sun Nov 27 2022)
 
 #### 🐛 Bug Fix
