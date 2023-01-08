@@ -8,7 +8,7 @@ const dataDir = path.join(cwd, "./data");
 // generate AssemblyScript files
 console.log("Generating AssemblyScript protobuf file...");
 execSync(
-  "protoc --plugin='protoc-gen-as=../../packages/as-proto-gen/bin/as-proto-gen' --as_out='./assembly' ./bench.proto",
+  "protoc --plugin='protoc-gen-as=../../packages/as-proto-gen/bin/as-proto-gen' --as_out='./assembly/generated' ./bench.proto",
   { cwd: dataDir, stdio: "pipe" }
 );
 // build AssemblyScript bench files
