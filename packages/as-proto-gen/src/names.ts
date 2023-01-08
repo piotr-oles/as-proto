@@ -22,12 +22,19 @@ export function getFieldTypeName(
 ): string {
   let fieldTypeName = "";
   if (filePackage) {
-    fieldTypeName += "." + filePackage;
+    fieldTypeName += ensureLeadingDot(filePackage);
   }
   if (typeName) {
-    fieldTypeName += "." + typeName;
+    fieldTypeName += ensureLeadingDot(typeName);
   }
   return fieldTypeName;
+}
+
+/**
+ * Ensures that a given string starts with a dot
+ */
+function ensureLeadingDot(string: string): string {
+  return string.startsWith(".") ? string : "." + string;
 }
 
 /**
