@@ -2,9 +2,10 @@ import {
   FileDescriptorProto,
   DescriptorProto,
   EnumDescriptorProto,
+  FieldDescriptorProto,
 } from "google-protobuf/google/protobuf/descriptor_pb";
-
-import { getFieldTypeName } from "./names";
+import { getFieldTypeName, getNamespacedTypeName } from "./names";
+import assert from "assert";
 
 type FileName = string;
 type FieldTypeName = string;
@@ -16,6 +17,12 @@ export class GeneratorContext {
     new Map();
   private typeNameToMessageDescriptor: Map<FieldTypeName, DescriptorProto> =
     new Map();
+  private typeNameToEnumDescriptor: Map<FieldTypeName, EnumDescriptorProto> =
+    new Map();
+  private typeNameToParentMessageDescriptors: Map<
+    FieldTypeName,
+    DescriptorProto[]
+  > = new Map();
 
   registerFile(fileDescriptor: FileDescriptorProto): void {
     const fileName = fileDescriptor.getName();
@@ -35,69 +42,70 @@ export class GeneratorContext {
   registerMessage(
     fileDescriptor: FileDescriptorProto,
     messageDescriptor: DescriptorProto,
-    messageNamespace?: string
+    parentMessageDescriptors: DescriptorProto[] = []
   ) {
     const filePackage = fileDescriptor.getPackage();
-    const messageName = messageDescriptor.getName();
-
-    if (!messageName) {
-      throw new Error(
-        `Unknown name of the message in ${fileDescriptor.getName()} file.`
-      );
-    }
-    const messageNameWithNamespace = messageNamespace
-      ? `${messageNamespace}.${messageName}`
-      : messageName;
-
-    const fieldTypeName = getFieldTypeName(
-      filePackage,
-      messageNameWithNamespace
+    const messageName = getNamespacedTypeName(
+      messageDescriptor,
+      parentMessageDescriptors
     );
+    const fieldTypeName = getFieldTypeName(filePackage, messageName);
+
     this.typeNameToFileDescriptor.set(fieldTypeName, fileDescriptor);
     this.typeNameToMessageDescriptor.set(fieldTypeName, messageDescriptor);
+    this.typeNameToParentMessageDescriptors.set(
+      fieldTypeName,
+      parentMessageDescriptors
+    );
 
     for (const nestedMessageDescriptor of messageDescriptor.getNestedTypeList()) {
-      this.registerMessage(
-        fileDescriptor,
-        nestedMessageDescriptor,
-        messageNameWithNamespace
-      );
+      this.registerMessage(fileDescriptor, nestedMessageDescriptor, [
+        ...parentMessageDescriptors,
+        messageDescriptor,
+      ]);
     }
 
     for (const enumDescriptor of messageDescriptor.getEnumTypeList()) {
-      this.registerEnum(
-        fileDescriptor,
-        enumDescriptor,
-        messageNameWithNamespace
-      );
+      this.registerEnum(fileDescriptor, enumDescriptor, [
+        ...parentMessageDescriptors,
+        messageDescriptor,
+      ]);
     }
   }
 
   registerEnum(
     fileDescriptor: FileDescriptorProto,
     enumDescriptor: EnumDescriptorProto,
-    enumNamespace?: string
+    parentMessageDescriptors: DescriptorProto[] = []
   ) {
     const filePackage = fileDescriptor.getPackage();
-    const enumName = enumDescriptor.getName();
-
-    if (!enumName) {
-      throw new Error(
-        `Unknown name of the enum in ${fileDescriptor.getName()} file.`
-      );
-    }
-    const enumNameWithNamespace = enumNamespace
-      ? `${enumNamespace}.${enumName}`
-      : enumName;
-    const fieldTypeName = getFieldTypeName(filePackage, enumNameWithNamespace);
+    const enumName = getNamespacedTypeName(
+      enumDescriptor,
+      parentMessageDescriptors
+    );
+    const fieldTypeName = getFieldTypeName(filePackage, enumName);
 
     this.typeNameToFileDescriptor.set(fieldTypeName, fileDescriptor);
+    this.typeNameToEnumDescriptor.set(fieldTypeName, enumDescriptor);
+    this.typeNameToParentMessageDescriptors.set(
+      fieldTypeName,
+      parentMessageDescriptors
+    );
   }
 
   getFileDescriptorByFileName(
     fileName: string
   ): FileDescriptorProto | undefined {
     return this.fileNameToFileDescriptor.get(fileName);
+  }
+
+  getFileDescriptorByFieldDescriptor(
+    fieldDescriptor: FieldDescriptorProto
+  ): FileDescriptorProto | undefined {
+    const fieldTypeName = fieldDescriptor.getTypeName();
+    assert.ok(fieldTypeName !== undefined);
+
+    return this.getFileDescriptorByFieldTypeName(fieldTypeName);
   }
 
   getFileDescriptorByFieldTypeName(
@@ -110,5 +118,45 @@ export class GeneratorContext {
     fieldTypeName: string
   ): DescriptorProto | undefined {
     return this.typeNameToMessageDescriptor.get(fieldTypeName);
+  }
+
+  getEnumDescriptorByFieldTypeName(
+    fieldTypeName: string
+  ): EnumDescriptorProto | undefined {
+    return this.typeNameToEnumDescriptor.get(fieldTypeName);
+  }
+
+  getMessageOrEnumByFieldDescriptor(
+    fieldDescriptor: FieldDescriptorProto
+  ): DescriptorProto | EnumDescriptorProto | undefined {
+    assert.ok(
+      fieldDescriptor.getType() === FieldDescriptorProto.Type.TYPE_MESSAGE ||
+        fieldDescriptor.getType() === FieldDescriptorProto.Type.TYPE_ENUM
+    );
+    const fieldTypeName = fieldDescriptor.getTypeName();
+    assert.ok(fieldTypeName !== undefined);
+
+    return fieldDescriptor.getType() === FieldDescriptorProto.Type.TYPE_MESSAGE
+      ? this.getMessageDescriptorByFieldTypeName(fieldTypeName)
+      : this.getEnumDescriptorByFieldTypeName(fieldTypeName);
+  }
+
+  getParentMessageDescriptorsByFieldTypeName(
+    fieldTypeName: string
+  ): DescriptorProto[] | undefined {
+    return this.typeNameToParentMessageDescriptors.get(fieldTypeName);
+  }
+
+  getParentMessageDescriptorsByFieldDescriptor(
+    fieldDescriptor: FieldDescriptorProto
+  ): DescriptorProto[] | undefined {
+    assert.ok(
+      fieldDescriptor.getType() === FieldDescriptorProto.Type.TYPE_MESSAGE ||
+        fieldDescriptor.getType() === FieldDescriptorProto.Type.TYPE_ENUM
+    );
+    const fieldTypeName = fieldDescriptor.getTypeName();
+    assert.ok(fieldTypeName !== undefined);
+
+    return this.getParentMessageDescriptorsByFieldTypeName(fieldTypeName);
   }
 }

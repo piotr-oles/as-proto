@@ -1,3 +1,9 @@
+import {
+  DescriptorProto,
+  EnumDescriptorProto,
+} from "google-protobuf/google/protobuf/descriptor_pb";
+import * as assert from "assert";
+
 /**
  * Removes extension suffix from the file path
  * @param filePath File path to remove extension from
@@ -11,6 +17,22 @@ export function getPathWithoutExtension(
   return filePath.endsWith(extension)
     ? filePath.slice(0, -extension.length)
     : filePath;
+}
+
+/**
+ * Get namespaced type name from descriptors.
+ */
+export function getNamespacedTypeName(
+  messageOrEnumDescriptor: DescriptorProto | EnumDescriptorProto,
+  parentMessageDescriptors: DescriptorProto[]
+) {
+  assert.ok(messageOrEnumDescriptor.getName() !== undefined);
+  return [
+    ...parentMessageDescriptors.map((parentMessageDescriptor) =>
+      parentMessageDescriptor.getName()
+    ),
+    messageOrEnumDescriptor.getName(),
+  ].join(".");
 }
 
 /**
