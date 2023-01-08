@@ -1,4 +1,6 @@
-import { asproto } from "./proto/testbinary";
+import { TestAllTypes } from "./asproto/test/TestAllTypes";
+import { ForeignEnum } from "./asproto/test/ForeignEnum";
+import { ForeignMessage } from "./asproto/test/ForeignMessage";
 import { Protobuf } from "as-proto/assembly";
 
 export function encode(): Uint8Array {
@@ -8,7 +10,7 @@ export function encode(): Uint8Array {
   BYTES[2] = 8;
   BYTES[3] = 9;
 
-  const message = new asproto.test.TestAllTypes(
+  const message = new TestAllTypes(
     // TODO: add support for optional
     // -42,
     // -0x7fffffff00000000,
@@ -42,8 +44,8 @@ export function encode(): Uint8Array {
     [true],
     ["hello world"],
     [BYTES, BYTES],
-    [new asproto.test.ForeignMessage(1000)],
-    [asproto.test.ForeignEnum.FOREIGN_FOO]
+    [new ForeignMessage(1000)],
+    [ForeignEnum.FOREIGN_FOO]
     // TODO: add support for packed
     // [-42],
     // [-0x7fffffff00000000],
@@ -60,17 +62,11 @@ export function encode(): Uint8Array {
     // [true]
     // TODO: add support for oneof
   );
-  return Protobuf.encode<asproto.test.TestAllTypes>(
-    message,
-    asproto.test.TestAllTypes.encode
-  );
+  return Protobuf.encode<TestAllTypes>(message, TestAllTypes.encode);
 }
 
 export function decode(bytes: Uint8Array): boolean {
-  const message = Protobuf.decode<asproto.test.TestAllTypes>(
-    bytes,
-    asproto.test.TestAllTypes.decode
-  );
+  const message = Protobuf.decode<TestAllTypes>(bytes, TestAllTypes.decode);
 
   // TODO: add support for optional
   assert(message.repeatedInt32[0] === -42);
@@ -97,9 +93,7 @@ export function decode(bytes: Uint8Array): boolean {
   assert(message.repeatedBytes[1][2] === 8);
   assert(message.repeatedBytes[1][3] === 9);
   assert(message.repeatedForeignMessage[0].c === 1000);
-  assert(
-    message.repeatedForeignEnum[0] === asproto.test.ForeignEnum.FOREIGN_FOO
-  );
+  assert(message.repeatedForeignEnum[0] === ForeignEnum.FOREIGN_FOO);
   // TODO: add support for packed
   // TODO: add support for oneof
 
