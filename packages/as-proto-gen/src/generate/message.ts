@@ -23,14 +23,6 @@ export function generateMessage(
   const messageName = messageDescriptor.getName();
   assert.ok(messageName);
 
-  const messageOptions = messageDescriptor.getOptions();
-
-  if (messageOptions !== undefined && messageOptions.getMapEntry()) {
-    // TODO: ???
-    // this message type is the entry tuple for a map - don't output it
-    return "";
-  }
-
   const Message = fileContext.registerDefinition(messageName);
   if (compilerOptions.has("gen-helper-methods")) {
     // reserve these names

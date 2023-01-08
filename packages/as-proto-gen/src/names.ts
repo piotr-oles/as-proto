@@ -74,3 +74,7 @@ export function ensureRelativeImportDot(importName: string): string {
     ? importName
     : `./${importName}`;
 }
+
+export function sanitizeFileName(unsafeFileName: string): string {
+  return unsafeFileName.replace(/[^a-z0-9._\-]/gi, "_");
+}

@@ -2,6 +2,7 @@ import { FileDescriptorProto } from "google-protobuf/google/protobuf/descriptor_
 import { GeneratorContext } from "./generator-context";
 import { ScopeContext } from "./scope-context";
 import * as assert from "assert";
+import { getPathWithoutExtension } from "./names";
 
 export class FileContext {
   private readonly filePath: string;
@@ -35,29 +36,23 @@ export class FileContext {
     return this.fileDescriptor;
   }
 
-  registerImport(importNamePath: string, importPath: string): string {
-    const [importName, ...importNamespace] = importNamePath.split(".");
+  registerImport(importName: string, importPath: string): string {
+    const normalizedImportPath = getPathWithoutExtension(importPath, ".ts");
 
-    if (!importName) {
-      throw new Error(
-        `Cannot register empty import of ${importNamePath} from ${importPath}.`
-      );
-    }
     const importNames =
-      this.registeredImports.get(importPath) || new Map<string, string>();
+      this.registeredImports.get(normalizedImportPath) ||
+      new Map<string, string>();
     const safeImportName =
       importNames.get(importName) ||
       this.moduleScopeContext.registerName(importName);
 
     importNames.set(importName, safeImportName);
-    this.registeredImports.set(importPath, importNames);
+    this.registeredImports.set(normalizedImportPath, importNames);
 
-    return [safeImportName, ...importNamespace].join(".");
+    return safeImportName;
   }
 
-  registerDefinition(definitionNamePath: string): string {
-    const [definitionName] = definitionNamePath.split(".");
-
+  registerDefinition(definitionName: string): string {
     if (!this.registeredDefinitions.has(definitionName)) {
       // we assume that definitions are registered before imports
       assert.ok(!this.moduleScopeContext.hasRegisteredName(definitionName));
@@ -67,7 +62,7 @@ export class FileContext {
       this.moduleScopeContext.registerName(definitionName);
     }
 
-    return definitionNamePath;
+    return definitionName;
   }
 
   getImportsCode(): string {
