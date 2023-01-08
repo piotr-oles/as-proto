@@ -45,10 +45,14 @@ fs.readFile(process.stdin.fd, (error, input) => {
       const fileDescriptor =
         generatorContext.getFileDescriptorByFileName(fileName);
       assert.ok(fileDescriptor);
+      const outputFile = new CodeGeneratorResponse.File();
+      const outputFilePath =
+        getPathWithoutExtension(fileName, ".proto") + ".ts";
+      outputFile.setName(outputFilePath);
 
       const generatedCode = generateFile(
         fileDescriptor,
-        new FileContext(generatorContext, fileDescriptor),
+        new FileContext(outputFilePath, generatorContext, fileDescriptor),
         compilerOptions,
         compilerVersion
       );
@@ -61,8 +65,6 @@ fs.readFile(process.stdin.fd, (error, input) => {
         console.error(error);
       }
 
-      const outputFile = new CodeGeneratorResponse.File();
-      outputFile.setName(getPathWithoutExtension(fileName, ".proto") + ".ts");
       outputFile.setContent(formattedCode);
       codeGenResponse.addFile(outputFile);
     }

@@ -4,6 +4,7 @@ import { ScopeContext } from "./scope-context";
 import * as assert from "assert";
 
 export class FileContext {
+  private readonly filePath: string;
   private readonly moduleScopeContext: ScopeContext;
   private readonly generatorContext: GeneratorContext;
   private readonly fileDescriptor: FileDescriptorProto;
@@ -12,12 +13,18 @@ export class FileContext {
   private readonly registeredDefinitions: Set<string> = new Set();
 
   constructor(
+    filePath: string,
     generatorContext: GeneratorContext,
     fileDescriptor: FileDescriptorProto
   ) {
+    this.filePath = filePath;
     this.generatorContext = generatorContext;
     this.fileDescriptor = fileDescriptor;
     this.moduleScopeContext = new ScopeContext(this);
+  }
+
+  getFilePath(): string {
+    return this.filePath;
   }
 
   getGeneratorContext(): GeneratorContext {
