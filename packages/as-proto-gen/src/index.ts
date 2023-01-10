@@ -33,19 +33,19 @@ fs.readFile(process.stdin.fd, (error, input) => {
     );
 
     for (const fileDescriptor of codeGenRequest.getProtoFileList()) {
-      const fileDescriptorName = fileDescriptor.getName();
-      assert.ok(fileDescriptorName);
-
       generatorContext.registerFile(fileDescriptor);
-    }
 
-    for (const fileName of codeGenRequest.getFileToGenerateList()) {
-      const fileDescriptor =
-        generatorContext.getFileDescriptorByFileName(fileName);
-      assert.ok(fileDescriptor);
+      if (compilerOptions.has("no-gen-dependencies")) {
+        const fileName = fileDescriptor.getName();
+        assert.ok(fileName);
+        if (!codeGenRequest.getFileToGenerateList().includes(fileName)) {
+          // file not listed directly in the command - skip
+          continue;
+        }
+      }
 
       const outputFiles = generateFiles(
-        fileDescriptor,
+        fileDescriptor!,
         generatorContext,
         compilerOptions,
         compilerVersion
