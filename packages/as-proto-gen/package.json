@@ -1,6 +1,6 @@
 {
   "name": "as-proto-gen",
-  "version": "0.9.2",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "lib/index.js",
   "author": "Piotr Oleś <piotrek.oles@gmail.com>",
