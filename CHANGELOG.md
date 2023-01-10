@@ -1,3 +1,16 @@
+# v1.1.0 (Tue Jan 10 2023)
+
+#### 🚀 Enhancement
+
+- `as-proto-gen`
+  - feat: handle protobuf dependencies [#45](https://github.com/piotr-oles/as-proto/pull/45) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v1.0.0 (Tue Jan 10 2023)
 
 #### 💥 Breaking Change
