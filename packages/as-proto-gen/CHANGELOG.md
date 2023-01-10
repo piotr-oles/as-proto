@@ -1,3 +1,16 @@
+# v1.2.0 (Tue Jan 10 2023)
+
+#### 🚀 Enhancement
+
+- feat: handle message extend [#46](https://github.com/piotr-oles/as-proto/pull/46) ([@piotr-oles](https://github.com/piotr-oles))
+- feat: handle message extend ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v1.1.0 (Tue Jan 10 2023)
 
 #### 🚀 Enhancement
