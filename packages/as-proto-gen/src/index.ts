@@ -3,9 +3,7 @@ import {
   CodeGeneratorResponse,
 } from "google-protobuf/google/protobuf/compiler/plugin_pb";
 import { GeneratorContext } from "./generator-context";
-import { generateFile } from "./generate/file";
-import { getPathWithoutExtension } from "./names";
-import { FileContext } from "./file-context";
+import { generateFiles } from "./generate/file";
 import prettier from "prettier";
 import * as fs from "fs-extra";
 import * as assert from "assert";
@@ -46,25 +44,27 @@ fs.readFile(process.stdin.fd, (error, input) => {
         generatorContext.getFileDescriptorByFileName(fileName);
       assert.ok(fileDescriptor);
 
-      const generatedCode = generateFile(
+      const outputFiles = generateFiles(
         fileDescriptor,
-        new FileContext(generatorContext, fileDescriptor),
+        generatorContext,
         compilerOptions,
         compilerVersion
       );
-      let formattedCode = generatedCode;
-      try {
-        formattedCode = prettier.format(generatedCode, {
-          parser: "typescript",
-        });
-      } catch (error) {
-        console.error(error);
-      }
 
-      const outputFile = new CodeGeneratorResponse.File();
-      outputFile.setName(getPathWithoutExtension(fileName, ".proto") + ".ts");
-      outputFile.setContent(formattedCode);
-      codeGenResponse.addFile(outputFile);
+      for (const outputFile of outputFiles) {
+        try {
+          // try to reformat code
+          outputFile.setContent(
+            prettier.format(outputFile.getContent() || "", {
+              parser: "typescript",
+            })
+          );
+        } catch (error) {
+          console.error(error);
+        }
+
+        codeGenResponse.addFile(outputFile);
+      }
     }
 
     process.stdout.write(Buffer.from(codeGenResponse.serializeBinary().buffer));
