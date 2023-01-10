@@ -51,12 +51,23 @@ export function generateMessage(
   return parts.join("\n");
 }
 
+function getAllFields(
+  messageDescriptor: DescriptorProto
+): FieldDescriptorProto[] {
+  return [
+    ...messageDescriptor.getFieldList(),
+    ...messageDescriptor.getExtensionList(),
+  ];
+}
+
 function generateEncodeMethod(
   messageDescriptor: DescriptorProto,
   fileContext: FileContext
 ): string {
   const messageName = messageDescriptor.getName();
   assert.ok(messageName);
+
+  const fields = getAllFields(messageDescriptor);
 
   const Writer = fileContext.registerImport("Writer", "as-proto/assembly");
   const Message = fileContext.registerDefinition(messageName);
@@ -65,8 +76,7 @@ function generateEncodeMethod(
 
   return `
     static encode(message: ${Message}, writer: ${Writer}): void {
-      ${messageDescriptor
-        .getFieldList()
+      ${fields
         .map(
           (fieldDescriptor) =>
             `${generateFieldEncodeInstruction(fieldDescriptor, scopeContext)}`
@@ -82,6 +92,8 @@ function generateDecodeMethod(
 ): string {
   const messageName = messageDescriptor.getName();
   assert.ok(messageName);
+
+  const fields = getAllFields(messageDescriptor);
 
   const Reader = fileContext.registerImport("Reader", "as-proto/assembly");
   const Message = fileContext.registerDefinition(messageName);
@@ -102,8 +114,7 @@ function generateDecodeMethod(
       while (reader.ptr < end) {
         const tag = reader.uint32();
         switch (tag >>> 3) {
-          ${messageDescriptor
-            .getFieldList()
+          ${fields
             .map(
               (fieldDescriptor) =>
                 `${generateFieldDecodeInstruction(
@@ -128,7 +139,7 @@ function generateMessageFieldsDeclarations(
   messageDescriptor: DescriptorProto,
   fileContext: FileContext
 ): string {
-  const fields = messageDescriptor.getFieldList();
+  const fields = getAllFields(messageDescriptor);
 
   return fields
     .map(
@@ -145,7 +156,7 @@ function generateMessageConstructor(
   messageDescriptor: DescriptorProto,
   fileContext: FileContext
 ): string {
-  const fields = messageDescriptor.getFieldList();
+  const fields = getAllFields(messageDescriptor);
 
   const constructorParams = fields
     .map(
@@ -178,9 +189,18 @@ function generateMessageConstructor(
 
 function canMessageByUnmanaged(
   messageDescriptor: DescriptorProto,
-  fileContext: FileContext
+  fileContext: FileContext,
+  visitedMessageDescriptors = new Set<DescriptorProto>()
 ): boolean {
-  return messageDescriptor.getFieldList().every((fieldDescriptor) => {
+  const fields = getAllFields(messageDescriptor);
+
+  if (visitedMessageDescriptors.has(messageDescriptor)) {
+    // handle cycles
+    return false;
+  }
+  visitedMessageDescriptors.add(messageDescriptor);
+
+  return fields.every((fieldDescriptor) => {
     if (
       fieldDescriptor.getLabel() === FieldDescriptorProto.Label.LABEL_REPEATED
     ) {
@@ -199,7 +219,11 @@ function canMessageByUnmanaged(
         .getGeneratorContext()
         .getMessageDescriptorByFieldTypeName(typeName);
       return relatedMessageDescriptor
-        ? canMessageByUnmanaged(relatedMessageDescriptor, fileContext)
+        ? canMessageByUnmanaged(
+            relatedMessageDescriptor,
+            fileContext,
+            visitedMessageDescriptors
+          )
         : false;
     } else {
       // unsupported managed type
