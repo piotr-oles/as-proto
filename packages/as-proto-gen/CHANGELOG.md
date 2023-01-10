@@ -1,3 +1,26 @@
+# v1.0.0 (Tue Jan 10 2023)
+
+#### 💥 Breaking Change
+
+- Per-message/enum file output [#44](https://github.com/piotr-oles/as-proto/pull/44) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### 🚀 Enhancement
+
+- feat: generate file for each message and enum ([@piotr-oles](https://github.com/piotr-oles))
+- feat: remove nested message generation ([@piotr-oles](https://github.com/piotr-oles))
+- feat: add parent descriptors to generator context ([@piotr-oles](https://github.com/piotr-oles))
+- feat: add `filePath` property to `FileContext` ([@piotr-oles](https://github.com/piotr-oles))
+
+#### 🐛 Bug Fix
+
+- fix: prevent double-dot in `getFieldTypeName()` ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.9.2 (Thu Dec 08 2022)
 
 #### 🐛 Bug Fix

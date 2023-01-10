@@ -1,3 +1,16 @@
+# v1.0.0 (Tue Jan 10 2023)
+
+#### 💥 Breaking Change
+
+- `as-proto-gen`
+  - Per-message/enum file output [#44](https://github.com/piotr-oles/as-proto/pull/44) ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 1
+
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v0.9.2 (Thu Dec 08 2022)
 
 :tada: This release contains work from a new contributor! :tada:
