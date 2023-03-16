@@ -31,7 +31,6 @@ export function generateMessage(
   }
 
   const MessageClass = `
-    ${canMessageByUnmanaged(messageDescriptor, fileContext) ? "@unmanaged" : ""}
     export class ${Message} {
       ${generateEncodeMethod(messageDescriptor, fileContext)}
       ${generateDecodeMethod(messageDescriptor, fileContext)}
@@ -185,51 +184,6 @@ function generateMessageConstructor(
      ${fieldsAssignments}
     }
   `;
-}
-
-function canMessageByUnmanaged(
-  messageDescriptor: DescriptorProto,
-  fileContext: FileContext,
-  visitedMessageDescriptors = new Set<DescriptorProto>()
-): boolean {
-  const fields = getAllFields(messageDescriptor);
-
-  if (visitedMessageDescriptors.has(messageDescriptor)) {
-    // handle cycles
-    return false;
-  }
-  visitedMessageDescriptors.add(messageDescriptor);
-
-  return fields.every((fieldDescriptor) => {
-    if (
-      fieldDescriptor.getLabel() === FieldDescriptorProto.Label.LABEL_REPEATED
-    ) {
-      // message with repeated field is not supported as unmanaged
-      return false;
-    } else if (!isManagedFieldType(fieldDescriptor)) {
-      // not managed type - we're good
-      return true;
-    } else if (
-      fieldDescriptor.getType() === FieldDescriptorProto.Type.TYPE_MESSAGE
-    ) {
-      // message type - if message itself is unmanaged, we're good
-      const typeName = fieldDescriptor.getTypeName();
-      assert.ok(typeName !== undefined);
-      const relatedMessageDescriptor = fileContext
-        .getGeneratorContext()
-        .getMessageDescriptorByFieldTypeName(typeName);
-      return relatedMessageDescriptor
-        ? canMessageByUnmanaged(
-            relatedMessageDescriptor,
-            fileContext,
-            visitedMessageDescriptors
-          )
-        : false;
-    } else {
-      // unsupported managed type
-      return false;
-    }
-  });
 }
 
 function generateHelperMethods(
