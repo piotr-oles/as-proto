@@ -219,8 +219,7 @@ google-protobuf x 160,281 ops/sec ±0.46% (91 runs sampled)
 
 The library is slower on decoding mostly because of GC - AssemblyScript provides very simple (and small) GC
 which is not as good as V8 GC. The `as-proto` beats JavaScript on decoding when messages contain
-only primitive values or other messages (no strings and arrays). In this case the generator creates
-`@unmanaged` classes which are much faster for memory management.
+only primitive values or other messages (no strings and arrays).
 
 ## License
 MIT
