@@ -95,8 +95,8 @@ export class FixedReader extends Reader {
   }
 
   string(): string {
-    const bytes = this.bytes();
-    return String.UTF8.decodeUnsafe(bytes.dataStart, bytes.byteLength);
+    const length = this.uint32();
+    return String.UTF8.decodeUnsafe(this.inc(length), length);
   }
 
   skip(length: u32): void {
