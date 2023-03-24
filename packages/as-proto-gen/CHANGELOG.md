@@ -1,3 +1,20 @@
+# v1.2.1 (Fri Mar 24 2023)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Adam Wootton ([@ajwootto](https://github.com/ajwootto)), for all your work!
+
+#### 🐛 Bug Fix
+
+- Remove unmanaged decorator from generated output [#49](https://github.com/piotr-oles/as-proto/pull/49) ([@ajwootto](https://github.com/ajwootto))
+- remove unmanaged decorator usage from generated definitions ([@ajwootto](https://github.com/ajwootto))
+
+#### Authors: 1
+
+- Adam Wootton ([@ajwootto](https://github.com/ajwootto))
+
+---
+
 # v1.2.0 (Tue Jan 10 2023)
 
 #### 🚀 Enhancement

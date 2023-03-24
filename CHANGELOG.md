@@ -1,3 +1,25 @@
+# v1.2.1 (Fri Mar 24 2023)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Adam Wootton ([@ajwootto](https://github.com/ajwootto)), for all your work!
+
+#### 🐛 Bug Fix
+
+- `as-proto-gen`
+  - Remove unmanaged decorator from generated output [#49](https://github.com/piotr-oles/as-proto/pull/49) ([@ajwootto](https://github.com/ajwootto))
+
+#### ⚠️ Pushed to `main`
+
+- chore: add FUNDING.yml file ([@piotr-oles](https://github.com/piotr-oles))
+
+#### Authors: 2
+
+- Adam Wootton ([@ajwootto](https://github.com/ajwootto))
+- Piotr Oleś ([@piotr-oles](https://github.com/piotr-oles))
+
+---
+
 # v1.2.0 (Tue Jan 10 2023)
 
 #### 🚀 Enhancement
