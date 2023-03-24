@@ -1,3 +1,16 @@
+# v1.3.0 (Fri Mar 24 2023)
+
+#### 🚀 Enhancement
+
+- `as-proto`
+  - read buffer directly when parsing string [#48](https://github.com/piotr-oles/as-proto/pull/48) ([@ajwootto](https://github.com/ajwootto))
+
+#### Authors: 1
+
+- Adam Wootton ([@ajwootto](https://github.com/ajwootto))
+
+---
+
 # v1.2.1 (Fri Mar 24 2023)
 
 :tada: This release contains work from a new contributor! :tada:
