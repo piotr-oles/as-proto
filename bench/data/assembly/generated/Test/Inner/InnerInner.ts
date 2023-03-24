@@ -6,7 +6,6 @@
 import { Writer, Reader } from "as-proto/assembly";
 import { Enum } from "../Enum";
 
-@unmanaged
 export class InnerInner {
   static encode(message: InnerInner, writer: Writer): void {
     writer.uint32(8);
