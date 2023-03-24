@@ -1,6 +1,6 @@
 {
   "name": "as-proto",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "assembly/index.ts",
   "types": "assembly/index.ts",
   "license": "MIT",
