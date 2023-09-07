@@ -86,12 +86,18 @@ export function getOutputFilePath(
   assert.ok(messageName !== undefined);
 
   const outputFileName = sanitizeFileName(`${messageName}.ts`);
+  const path = [outputFileName];
+  const filePrefix = getFilePrefix(fileDescriptor);
+  const nestedMessagePrefix = getNestedMessagePrefix(parentMessageDescriptors);
 
-  return [
-    getFilePrefix(fileDescriptor),
-    getNestedMessagePrefix(parentMessageDescriptors),
-    outputFileName,
-  ].join("/");
+  if (nestedMessagePrefix) {
+    path.unshift(nestedMessagePrefix);
+  }
+
+  if (filePrefix) {
+    path.unshift(filePrefix);
+  }
+  return path.join("/");
 }
 
 function generateMessageFiles(
