@@ -91,7 +91,7 @@ export function getOutputFilePath(
     getFilePrefix(fileDescriptor),
     getNestedMessagePrefix(parentMessageDescriptors),
     outputFileName,
-  ].join("/");
+  ].filter(part => part !== undefined && part !== '').join("/");
 }
 
 function generateMessageFiles(
